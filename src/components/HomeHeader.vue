@@ -1,0 +1,182 @@
+<template>
+  <header class="home-header">
+    <div class="home-header-left home-header-block">
+    </div>
+    <div class="home-header-middle home-header-block pan-toggles">
+      <span
+        class="pan-toggle"
+        :class="{visible: isVisible('html')}"
+        @click="togglePan('html')">
+        HTML
+      </span>
+      <span
+        class="pan-toggle"
+        :class="{visible: isVisible('css')}"
+        @click="togglePan('css')">
+        CSS
+      </span>
+      <span
+        class="pan-toggle"
+        :class="{visible: isVisible('js')}"
+        @click="togglePan('js')">
+        JS
+      </span>
+      <span
+        class="pan-toggle disabled"
+        :class="{visible: isVisible('console')}">
+        Console
+      </span>
+      <span
+        class="pan-toggle"
+        :class="{visible: isVisible('output')}"
+        @click="togglePan('output')">
+        Output
+      </span>
+    </div>
+    <div class="home-header-right home-header-block">
+      <el-button
+        icon="el-icon-refresh"
+        size="mini"
+        class="home-header-right-item"
+        plain
+        @click="runCode">
+        Run
+      </el-button>
+    </div>
+  </header>
+</template>
+
+<script>
+  import { Button } from 'element-ui'
+  import Data from '@/data'
+  import { inIframe } from '@/utils'
+
+  export default {
+    data() {
+      return {
+        version: process.env.VERSION,
+        latestCommit: process.env.LATEST_COMMIT,
+        inIframe,
+        url: window.location.href
+      }
+    },
+    methods: {
+      runCode() {
+        Data.$emit('run')
+      },
+      togglePan(panName) {
+        Data.$emit('togglePan', panName)
+      },
+      isVisible(panName) {
+        return Data.visiblePans.indexOf(panName) !== -1
+      }
+    },
+    components: {
+      'el-button': Button,
+    }
+  }
+</script>
+
+<style lang="stylus" scoped>
+.home-header
+  height: 40px;
+  border-bottom: 1px solid #bfbfbf
+  background-color: white
+  display: flex
+  align-items: center
+  padding: 0 10px
+  justify-content: space-between
+
+.home-header-block
+  flex: 1
+  width: 0
+
+.home-header-left
+  display: flex
+  justify-content: flex-start
+  .home-header-left-item
+    margin-right: 10px
+
+.el-dropdown-menu__item > label, .el-dropdown-menu__item > button
+  width: 100%
+  display: none
+
+.el-dropdown-menu__item > button
+  text-align: left
+
+@media screen and (max-width: 992px)
+  .el-dropdown-menu__item > label
+    display: inline-block
+
+@media screen and (max-width: 576px)
+  .el-dropdown-menu__item > button
+    display: inline-block
+
+.home-header-right
+  display: flex
+  justify-content: flex-end
+  align-items: center
+  .home-header-right-item
+    margin-left: 10px
+  @media screen and (max-width: 992px)
+    > label
+      display: none
+
+  @media screen and (max-width: 576px)
+    > button
+      display: none
+
+.changelog-indicator
+  display: flex
+  align-items: center
+  height: 28px
+
+.pan-toggles
+  display: flex
+  justify-content: center
+  height: 100%
+
+  .pan-toggle
+    display: flex
+    align-items: center
+    height: 100%
+    border-left: 1px solid #e2e2e2
+    border-right: @border-left
+    position: relative
+    padding: 0 10px
+    cursor: pointer
+    user-select: none
+
+    &.disabled
+      cursor not-allowed
+
+    &:not(:first-child)
+      margin-left: -1px
+
+    &:hover
+      &:not(.visible)
+        background-color: #f9f9f9
+
+    &.visible
+      background-color: #EBF3FF
+
+.editor-save-status
+  display: flex
+  align-items: center
+  color: #607d8b
+  .svg-icon
+    display: flex
+    align-items: center
+    margin-right: 5px
+  >>> svg
+    fill: @color
+    width: 16px
+    height: @width
+
+@media screen and (max-width: 768px)
+  .home-header-left
+    display: none
+  .pan-toggles
+    justify-content: left
+
+</style>

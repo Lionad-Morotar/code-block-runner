@@ -1,24 +1,9 @@
 # code-block-run
 
-## Project setup
-```
-npm install
-```
+一个类似 CodePen 的，用来实时预览 HTML、CSS、JS 的组件。可以嵌套在页面中。
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+![Preview](./assets/2020-05-18-22-56-59.png)
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Info
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+项目脚手架来自于：https://github.com/egoist/codepan，相比 CodePan，CodeBlockRun 更加轻量
