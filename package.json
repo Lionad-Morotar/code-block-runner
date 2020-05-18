@@ -1,10 +1,10 @@
 {
-  "name": "code-block-run",
+  "name": "code-block-runner",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name myLib ./src/components/Editor.vue",
+    "build": "vue-cli-service build --target lib --name code-block-runner ./src/components/Editor.vue",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
