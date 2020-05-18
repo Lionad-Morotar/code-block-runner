@@ -4,14 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name code-block-runner ./src/components/Editor.vue",
-    "lint": "vue-cli-service lint"
+    "build": "vue-cli-service build --target lib --name code ./src/components/Editor.vue && http-server -c0 ./dist"
   },
   "dependencies": {
     "codemirror": "^5.53.2",
-    "core-js": "^3.6.4",
     "debounce": "^1.2.0",
-    "nprogress": "^0.2.0",
     "vue": "^2.6.11"
   },
   "devDependencies": {
