@@ -32,6 +32,9 @@ export default {
     // 'console-pan': ConsolePan,
   },
   props: {
+    border: {
+      default: false
+    },
     visiblePans: Array,
     html: String,
     css: String,
@@ -48,7 +51,7 @@ export default {
     }
   },
   created() {
-    if (inIframe) {
+    if (inIframe || this.border) {
       this.$set(this.style, 'border', this.style.border || 'solid 1px #ddd')
       this.$set(this.style, 'border-radius', this.style['border-radius'] || '1px')
     }
