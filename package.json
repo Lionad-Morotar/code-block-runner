@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name code ./src/components/Editor.vue && http-server -c0 ./dist"
+    "build": "vue-cli-service build --target lib --name code ./src/components/Editor.vue",
+    "test": "npm run build  && http-server -c0 ./dist"
   },
   "dependencies": {
     "codemirror": "^5.53.2",
