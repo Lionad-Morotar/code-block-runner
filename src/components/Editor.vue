@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="editor" :style="style">
     <Header />
     <div class="pans">
       <HTMLPan class="pan" v-show="isVisible('html')" />
@@ -20,9 +20,9 @@ import OutputPan from '@/components/OutputPan.vue'
 // import ConsolePan from '@/components/ConsolePan.vue'
 
 import Data from '../data'
+import { inIframe } from '@/utils'
 
 export default {
-  name: 'editor-page',
   components: {
     Header,
     HTMLPan,
@@ -35,7 +35,23 @@ export default {
     visiblePans: Array,
     html: String,
     css: String,
-    js: String
+    js: String,
+    height: {
+      default: '100%'
+    }
+  },
+  data() {
+    return {
+      style: {
+        height: this.height,
+      }
+    }
+  },
+  created() {
+    if (inIframe) {
+      this.$set(this.style, 'border', this.style.border || 'solid 1px #ddd')
+      this.$set(this.style, 'border-radius', this.style['border-radius'] || '1px')
+    }
   },
   mounted() {
     Data.visiblePans = this.visiblePans || Data.visiblePans
@@ -62,17 +78,11 @@ export default {
   height: 0;
 }
 
-html, body, #app, .page
-  height: 100%
-
-body
-  background-color: #f9f9f9
+.editor
   margin: 0
-  font-size: 14px
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif
-
-*
-  box-sizing: border-box
+  padding: 0
+  width: 100%
+  height: 100%
 
 pre
   padding: 16px
@@ -143,7 +153,7 @@ pre > code
   .pan-resizer
     cursor: ew-resize
 
-.page.readonly
+.editor.readonly
   .CodeMirror-cursor
     display: none !important
 
