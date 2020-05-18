@@ -6,15 +6,15 @@ export default new Vue({
         return {
             code: {
                 html: {
-                    name: 'html',
+                    name: 'HTML',
                     code: ''
                 },
                 js: {
-                    name: 'js',
+                    name: 'Javascript',
                     code: ''
                 },
                 css: {
-                    name: 'css',
+                    name: 'CSS',
                     code: ''
                 },
             },

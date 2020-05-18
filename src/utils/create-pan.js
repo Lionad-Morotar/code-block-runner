@@ -1,4 +1,3 @@
-import { Dropdown, DropdownMenu, DropdownItem } from 'element-ui'
 import Data from '@/data'
 
 import PanResizer from '@/components/PanResizer.vue'
@@ -65,9 +64,6 @@ export default ({ name, editor, components } = {}) => {
       }
     },
     components: {
-      Dropdown,
-      DropdownMenu,
-      DropdownItem,
       PanResizer,
       ...components
     }

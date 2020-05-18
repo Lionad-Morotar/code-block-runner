@@ -34,20 +34,17 @@
       </span>
     </div>
     <div class="home-header-right home-header-block">
-      <el-button
-        icon="el-icon-refresh"
-        size="mini"
+      <Button
         class="home-header-right-item"
         plain
         @click="runCode">
         Run
-      </el-button>
+      </Button>
     </div>
   </header>
 </template>
 
 <script>
-  import { Button } from 'element-ui'
   import Data from '@/data'
   import { inIframe } from '@/utils'
 
@@ -70,9 +67,6 @@
       isVisible(panName) {
         return Data.visiblePans.indexOf(panName) !== -1
       }
-    },
-    components: {
-      'el-button': Button,
     }
   }
 </script>
@@ -118,6 +112,24 @@
   align-items: center
   .home-header-right-item
     margin-left: 10px
+    padding: 7px 15px
+    font-size: 12px
+    border-radius: 3px
+    display: inline-block
+    line-height: 1
+    white-space: nowrap
+    cursor: pointer
+    background: #FFF
+    border: 1px solid #DCDFE6
+    color: #606266
+    -webkit-appearance: none
+    text-align: center
+    box-sizing: border-box
+    outline: 0
+    margin: 0
+    transition: .1s
+    font-weight: 500
+
   @media screen and (max-width: 992px)
     > label
       display: none

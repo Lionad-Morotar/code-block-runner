@@ -5,14 +5,7 @@
     @click="setActivePan('js')"
     :style="style">
     <div class="pan-head">
-      <Dropdown trigger="click">
-        <span class="el-dropdown-link">
-          {{ code.name }} 
-        </span>
-        <DropdownMenu slot="dropdown">
-          <DropdownItem>JavaScript</DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
+      {{ code.name }} 
     </div>
     <textarea ref="editor" :value="code.code"></textarea>
     <PanResizer pan="js" :enable="enableResizer" />

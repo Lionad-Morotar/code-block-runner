@@ -40,17 +40,9 @@ export default {
   },
   mounted() {
     Data.visiblePans = this.visiblePans || Data.visiblePans
-    Data.code = Object.assign(Data.code, {
-      html: {
-        code: this.html || ''
-      },
-      css: {
-        code: this.css || ''
-      },
-      js: {
-        code: this.js || ''
-      },
-    })
+    Data.code.html.code = this.html || ''
+    Data.code.css.code = this.css || ''
+    Data.code.js.code = this.js || ''
     Data.$emit('refresh-all')
   },
   methods: {
@@ -66,6 +58,40 @@ export default {
 <style src="codemirror/addon/fold/foldgutter.css"></style>
 
 <style lang="stylus">
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+html, body, #app, .page
+  height: 100%
+
+body
+  background-color: #f9f9f9
+  margin: 0
+  font-size: 14px
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif
+
+*
+  box-sizing: border-box
+
+pre
+  padding: 16px
+  overflow: auto
+  font-size: 85%
+  line-height: 1.45
+  background-color: #f6f8fa
+  border-radius: 3px
+
+pre > code
+  padding: 0
+  margin: 0
+  font-size: 100%
+  word-break: normal
+  white-space: pre
+  background: transparent
+  border: 0
+
 .CodeMirror
   font-family: 'consolas'
 </style>
