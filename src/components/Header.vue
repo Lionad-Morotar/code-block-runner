@@ -1,8 +1,8 @@
 <template>
-  <header class="home-header">
-    <div class="home-header-left home-header-block">
+  <header class="header">
+    <div class="header-left header-block">
     </div>
-    <div class="home-header-middle home-header-block pan-toggles">
+    <div class="header-middle header-block pan-toggles">
       <span
         class="pan-toggle"
         :class="{visible: isVisible('html')}"
@@ -33,9 +33,9 @@
         Output
       </span>
     </div>
-    <div class="home-header-right home-header-block">
+    <div class="header-right header-block">
       <Button
-        class="home-header-right-item"
+        class="header-right-item"
         plain
         @click="runCode">
         Run
@@ -72,8 +72,9 @@
 </script>
 
 <style lang="stylus" scoped>
-.home-header
-  height: 40px;
+.header
+  box-sizing: border-box
+  height: 40px
   border-bottom: 1px solid #bfbfbf
   background-color: white
   display: flex
@@ -81,14 +82,14 @@
   padding: 0 10px
   justify-content: space-between
 
-.home-header-block
+.header-block
   flex: 1
   width: 0
 
-.home-header-left
+.header-left
   display: flex
   justify-content: flex-start
-  .home-header-left-item
+  .header-left-item
     margin-right: 10px
 
 .el-dropdown-menu__item > label, .el-dropdown-menu__item > button
@@ -106,11 +107,11 @@
   .el-dropdown-menu__item > button
     display: inline-block
 
-.home-header-right
+.header-right
   display: flex
   justify-content: flex-end
   align-items: center
-  .home-header-right-item
+  .header-right-item
     margin-left: 10px
     padding: 7px 15px
     font-size: 12px
@@ -186,7 +187,7 @@
     height: @width
 
 @media screen and (max-width: 768px)
-  .home-header-left
+  .header-left
     display: none
   .pan-toggles
     justify-content: left
