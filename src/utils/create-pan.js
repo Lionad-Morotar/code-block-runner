@@ -48,6 +48,10 @@ export default ({ name, editor, components } = {}) => {
       Data.$on('focus-editor', () => {
         this.editor.focus()
       })
+      Data.$on([`refresh-${name}-editor`, 'refresh-all'], () => {
+        this.editor.setValue(Data.code[name].code)
+        this.editor.refresh()
+      })
       Data.$on(`set-${name}-pan-style`, style => {
         this.style = {
           ...this.style,

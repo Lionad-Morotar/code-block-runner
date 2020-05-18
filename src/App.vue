@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <Editor />
+    <Editor
+      :visiblePans="['js', 'output']"
+      js="function test() {console.log('asdf')}; test()"
+    />
   </div>
 </template>
 

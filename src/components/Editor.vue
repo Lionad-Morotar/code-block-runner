@@ -32,6 +32,27 @@ export default {
     OutputPan,
     // 'console-pan': ConsolePan,
   },
+  props: {
+    visiblePans: Array,
+    html: String,
+    css: String,
+    js: String
+  },
+  mounted() {
+    Data.visiblePans = this.visiblePans || Data.visiblePans
+    Data.code = Object.assign(Data.code, {
+      html: {
+        code: this.html || ''
+      },
+      css: {
+        code: this.css || ''
+      },
+      js: {
+        code: this.js || ''
+      },
+    })
+    Data.$emit('refresh-all')
+  },
   methods: {
     isVisible(panName) {
       return Data.visiblePans.indexOf(panName) !== -1
