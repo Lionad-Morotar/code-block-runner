@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <HomeHeader />
+    <Header />
     <div class="pans">
       <HTMLPan class="pan" v-show="isVisible('html')" />
       <CSSPan class="pan" v-show="isVisible('css')" />
@@ -8,12 +8,11 @@
       <!-- <console-pan class="pan" v-show="isVisible('console')" />  -->
       <OutputPan class="pan" v-show="isVisible('output')" />
     </div>
-
   </div>
 </template>
 
 <script>
-import HomeHeader from '@/components/HomeHeader.vue'
+import Header from '@/components/Header.vue'
 import HTMLPan from '@/components/HTMLPan.vue'
 import CSSPan from '@/components/CSSPan.vue'
 import JSPan from '@/components/JSPan.vue'
@@ -25,7 +24,7 @@ import Data from '../data'
 export default {
   name: 'editor-page',
   components: {
-    HomeHeader,
+    Header,
     HTMLPan,
     CSSPan,
     JSPan,
