@@ -6,4 +6,4 @@
 
 ## Info
 
-项目脚手架来自于：https://github.com/egoist/codepan，相比 CodePan，CodeBlockRun 更加轻量
+项目脚手架来自于 [codepan@egoist](https://github.com/egoist/codepan)，相比 CodePan，CodeBlockRun 更加轻量
