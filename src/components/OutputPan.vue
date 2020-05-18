@@ -87,9 +87,12 @@ export default {
 .output-pan
   overflow: hidden
 
-.output-iframe
+#output-iframe
+  position: relative
   width: 100%
   height: calc(100% - 40px)
+  overflow: hidden
+
   &.disable-mouse-events
     pointer-events: none
 </style>
