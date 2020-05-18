@@ -56,6 +56,6 @@ export default new Vue({
         },
         debounceRunCode: debounce(function() {
             this.$emit('run')
-        }, 500)
+        }, 300)
     }
 })

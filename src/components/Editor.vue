@@ -1,9 +1,6 @@
 <template>
   <div class="page">
     <HomeHeader />
-    <compiled-code-dialog highlight="htmlmixed" type="html" />
-    <compiled-code-dialog highlight="css" type="css" />
-    <compiled-code-dialog highlight="javascript" type="js" />
     <div class="pans">
       <HTMLPan class="pan" v-show="isVisible('html')" />
       <CSSPan class="pan" v-show="isVisible('css')" />
@@ -17,7 +14,6 @@
 
 <script>
 import HomeHeader from '@/components/HomeHeader.vue'
-import CompiledCodeDialog from '@/components/CompiledCodeDialog.vue'
 import HTMLPan from '@/components/HTMLPan.vue'
 import CSSPan from '@/components/CSSPan.vue'
 import JSPan from '@/components/JSPan.vue'
@@ -30,7 +26,6 @@ export default {
   name: 'editor-page',
   components: {
     HomeHeader,
-    CompiledCodeDialog,
     HTMLPan,
     CSSPan,
     JSPan,
@@ -49,6 +44,11 @@ export default {
 
 <style src="codemirror/addon/fold/foldgutter.css"></style>
 
+<style lang="stylus">
+.CodeMirror
+  font-family: 'consolas'
+</style>
+
 <style lang="stylus" scoped>
 .pans
   height: calc(100% - 40px)
@@ -61,6 +61,7 @@ export default {
   top: 0
   bottom: 0
   overflow: auto
+
   &.active-pan
     background-color: white
 </style>
