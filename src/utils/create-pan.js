@@ -1,7 +1,7 @@
 import PanResizer from '@/components/PanResizer.vue'
 import createEditor from '@/utils/create-editor'
 import panPosition from '@/utils/pan-position'
-import Data from '@/data'
+import Get from '@/utils/get-parent-attrs'
 
 export default ({ name, editor, components } = {}) => {
   return {
@@ -16,10 +16,10 @@ export default ({ name, editor, components } = {}) => {
         return true
       },
       isActivePan() {
-        return Data.activePan === name
+        return Get(this).$store.activePan === name
       },
       code() {
-        return Data.code[name]
+        return Get(this).$store.code[name]
       }
     },
     watch: {
@@ -32,25 +32,25 @@ export default ({ name, editor, components } = {}) => {
         ...editor
       })
       this.editor.on('change', e => {
-        Data.code[name].code = e.getValue()
+        Get(this).$store.code[name].code = e.getValue()
       })
       this.editor.on('focus', () => {
-        if (this.activePan !== name && Data.visiblePans.indexOf(name) > -1) {
+        if (this.activePan !== name && Get(this).$store.visiblePans.indexOf(name) > -1) {
           this.setActivePan()
         }
       })
-      this.style = panPosition(Data.visiblePans, name)
-      Data.$on('visiblePans-change', val => {
+      this.style = panPosition(Get(this).$store.visiblePans, name)
+      Get(this).$store.$on('visiblePans-change', val => {
         this.style = panPosition(val, name)
       })
-      Data.$on('focus-editor', () => {
+      Get(this).$store.$on('focus-editor', () => {
         this.editor.focus()
       })
-      Data.$on([`refresh-${name}-editor`, 'refresh-all'], () => {
-        this.editor.setValue(Data.code[name].code)
+      Get(this).$store.$on([`refresh-${name}-editor`, 'refresh-all'], () => {
+        this.editor.setValue(Get(this).$store.code[name].code)
         this.editor.refresh()
       })
-      Data.$on(`set-${name}-pan-style`, style => {
+      Get(this).$store.$on(`set-${name}-pan-style`, style => {
         this.style = {
           ...this.style,
           ...style
@@ -59,7 +59,7 @@ export default ({ name, editor, components } = {}) => {
     },
     methods: {
       setActivePan() {
-        Data.activePan = name
+        Get(this).$store.activePan = name
       }
     },
     components: {

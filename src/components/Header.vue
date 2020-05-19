@@ -46,30 +46,30 @@
 </template>
 
 <script>
-  import Data from '@/data'
-  import { inIframe } from '@/utils'
+import { inIframe } from '@/utils'
+import Get from '@/utils/get-parent-attrs'
 
-  export default {
-    data() {
-      return {
-        version: process.env.VERSION,
-        latestCommit: process.env.LATEST_COMMIT,
-        inIframe,
-        url: window.location.href
-      }
+export default {
+  data() {
+    return {
+      version: process.env.VERSION,
+      latestCommit: process.env.LATEST_COMMIT,
+      inIframe,
+      url: window.location.href
+    }
+  },
+  methods: {
+    runCode() {
+      Get(this).$store.$emit('run')
     },
-    methods: {
-      runCode() {
-        Data.$emit('run')
-      },
-      togglePan(panName) {
-        Data.$emit('togglePan', panName)
-      },
-      isVisible(panName) {
-        return Data.visiblePans.indexOf(panName) !== -1
-      }
+    togglePan(panName) {
+      Get(this).$store.$emit('togglePan', panName)
+    },
+    isVisible(panName) {
+      return Get(this).$store.visiblePans.indexOf(panName) !== -1
     }
   }
+}
 </script>
 
 <style lang="stylus" scoped>

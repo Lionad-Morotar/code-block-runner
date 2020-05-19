@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import Data from '@/data'
+import Get from '@/utils/get-parent-attrs'
 import createIframe from '@/utils/iframe'
 import panPosition from '@/utils/pan-position'
 import proxyConsoleFn from '!!raw-loader!@/utils/proxy-console'
@@ -44,7 +44,7 @@ export default {
   },
   computed: {
     isActivePan() {
-      return Data.activePan === 'output'
+      return Get(this).$store.activePan === 'output'
     },
   },
   mounted() {
@@ -52,12 +52,12 @@ export default {
       el: document.getElementById('output-iframe-holder'),
       sandboxAttributes
     })
-    this.style = panPosition(Data.visiblePans, 'output')
-      Data.$on('visiblePans-change', val => {
+    this.style = panPosition(Get(this).$store.visiblePans, 'output')
+      Get(this).$store.$on('visiblePans-change', val => {
         this.style = panPosition(val, 'output')
       })
-    Data.$on('run', () => this.run())
-    Data.$on(`set-output-pan-style`, style => {
+    Get(this).$store.$on('run', () => this.run())
+    Get(this).$store.$on(`set-output-pan-style`, style => {
       this.style = {
         ...this.style,
         ...style
@@ -72,13 +72,13 @@ export default {
     async listenIframe({ data = {} }) {
       switch (data.type) {
         case 'iframe-error':
-          Data.logs.push({
+          Get(this).$store.logs.push({
             type: 'error',
             message: data.message
           })
           break
         case 'console':
-          Data.logs.push({
+          Get(this).$store.logs.push({
             type: data.method,
             message: data.args.map(x => JSON.stringify ? JSON.stringify(x) : x).join(' ')
           })
@@ -86,19 +86,19 @@ export default {
       }
     },
     async run() {
-      const headStyle = createElement('style')(Data.code.css.code)
+      const headStyle = createElement('style')(Get(this).$store.code.css.code)
       const proxyConsole = createElement('script')(proxyConsoleFn)
-      const script = createElement('script')(Data.code.js.code)
-      const html = Data.code.html.code
+      const script = createElement('script')(Get(this).$store.code.js.code)
+      const html = Get(this).$store.code.html.code
 
-      Data.logs.splice(0, Data.logs.length)
+      Get(this).$store.logs.splice(0, Get(this).$store.logs.length)
       this.iframe.setHTML({
         head: headStyle + proxyConsole + script,
         body: html
       })
     },
     setActivePan(panName) {
-      Data.activePan = panName
+      Get(this).$store.activePan = panName
     }
   }
 }

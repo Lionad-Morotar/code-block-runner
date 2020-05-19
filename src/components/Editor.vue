@@ -19,10 +19,12 @@ import JSPan from '@/components/JSPan.vue'
 import OutputPan from '@/components/OutputPan.vue'
 import ConsolePan from '@/components/ConsolePan.vue'
 
-import Data from '../data'
+import Data from '@/data'
 import { inIframe } from '@/utils'
+import Get from '@/utils/get-parent-attrs'
 
 export default {
+  name: 'Code-Block-Runner',
   components: {
     Header,
     HTMLPan,
@@ -43,6 +45,9 @@ export default {
       default: '100%'
     }
   },
+  beforeCreate() {
+    this.$store = Data.create()
+  },
   data() {
     return {
       style: {
@@ -57,15 +62,15 @@ export default {
     }
   },
   mounted() {
-    Data.visiblePans = this.visiblePans || Data.visiblePans
-    Data.code.html.code = this.html || ''
-    Data.code.css.code = this.css || ''
-    Data.code.js.code = this.js || ''
-    Data.$emit('refresh-all')
+    Get(this).$store.visiblePans = this.visiblePans || Get(this).$store.visiblePans
+    Get(this).$store.code.html.code = this.html || ''
+    Get(this).$store.code.css.code = this.css || ''
+    Get(this).$store.code.js.code = this.js || ''
+    Get(this).$store.$emit('refresh-all')
   },
   methods: {
     isVisible(panName) {
-      return Data.visiblePans.indexOf(panName) !== -1
+      return Get(this).$store.visiblePans.indexOf(panName) !== -1
     }
   }
 }

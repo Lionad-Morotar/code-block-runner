@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import Data from '@/data'
+import Get from '@/utils/get-parent-attrs'
 
 export default {
   props: ['enable', 'pan'],
@@ -25,16 +25,16 @@ export default {
   },
   computed: {
     nextPanName() {
-      const currentIndex = Data.visiblePans.indexOf(this.pan)
-      return Data.visiblePans[currentIndex + 1]
+      const currentIndex = Get(this).$store.visiblePans.indexOf(this.pan)
+      return Get(this).$store.visiblePans[currentIndex + 1]
     }
   },
   methods: {
     updateNextPan(style) {
-      Data.$emit(`set-${this.nextPanName}-pan-style`, style)
+      Get(this).$store.$emit(`set-${this.nextPanName}-pan-style`, style)
     },
     updateCurrentPan(style) {
-      Data.$emit(`set-${this.pan}-pan-style`, style)
+      Get(this).$store.$emit(`set-${this.pan}-pan-style`, style)
     },
     getNextVisiblePan(current) {
       const next = current.nextElementSibling
@@ -67,7 +67,7 @@ export default {
       this.currentPan.parentNode.classList.remove('resizing')
       document.getElementById('output-iframe').classList.remove('disable-mouse-events')
 
-      Data.$emit('refresh-editor', { run: false })
+      Get(this).$store.$emit('refresh-editor', { run: false })
     },
     handleMouseMove(e) {
       if (this.resizing) {

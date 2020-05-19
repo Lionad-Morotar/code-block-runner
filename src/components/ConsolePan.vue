@@ -23,7 +23,7 @@
 <script>
 import panPosition from '@/utils/pan-position'
 import PanResizer from '@/components/PanResizer.vue'
-import Data from '@/data'
+import Get from '@/utils/get-parent-attrs'
 
 export default {
   data() {
@@ -36,17 +36,17 @@ export default {
       return true
     },
     isActivePan() {
-      return Data.activePan === 'console'
+      return Get(this).$store.activePan === 'console'
     },
     logs() {
-      return Data.logs
+      return Get(this).$store.logs
     }
   },
   mounted() {
-    Data.$on('visiblePans-change', val => {
+    Get(this).$store.$on('visiblePans-change', val => {
       this.style = panPosition(val, 'console')
     }),
-    Data.$on(`set-console-pan-style`, style => {
+    Get(this).$store.$on(`set-console-pan-style`, style => {
       this.style = {
         ...this.style,
         ...style
@@ -55,7 +55,7 @@ export default {
   },
   methods: {
     setActivePan() {
-      Data.activePan = name
+      Get(this).$store.activePan = name
     }
   },
   components: {
