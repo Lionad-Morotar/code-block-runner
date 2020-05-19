@@ -22,9 +22,10 @@ import ConsolePan from '@/components/ConsolePan.vue'
 import Data from '@/data'
 import { inIframe } from '@/utils'
 import Get from '@/utils/get-parent-attrs'
+import { COMPONENT_NAME } from '@/utils/get-parent-attrs'
 
 export default {
-  name: 'Code-Block-Runner',
+  name: COMPONENT_NAME,
   components: {
     Header,
     HTMLPan,
