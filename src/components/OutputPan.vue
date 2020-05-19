@@ -17,6 +17,7 @@
 import Data from '@/data'
 import createIframe from '@/utils/iframe'
 import panPosition from '@/utils/pan-position'
+import proxyConsoleFn from '!!raw-loader!@/utils/proxy-console'
 
 const sandboxAttributes = [
   'allow-modals',
@@ -29,9 +30,7 @@ const sandboxAttributes = [
 
 const createElement = tag => (content = '', attrs = {}) => {
   attrs = Object.keys(attrs)
-    .map(key => {
-      return `${key}="${attrs[key]}"`
-    })
+    .map(key => `${key}="${attrs[key]}"`)
     .join(' ')
   return `<${tag} ${attrs}>${content}</${tag}>`
 }
@@ -64,40 +63,31 @@ export default {
         ...style
       }
     })
+    window.addEventListener('message', this.listenIframe)
+  },
+  beforeDestroy() {
+    window.removeEventListener('message', this.listenIframe)
   },
   methods: {
+    async listenIframe({ data = {} }) {
+      switch (data.type) {
+        case 'iframe-error':
+          Data.logs.push({
+            type: 'error',
+            message: data.message
+          })
+          break
+        case 'console':
+          Data.logs.push({
+            type: data.method,
+            message: data.args.map(x => x.toString ? x.toString() : x).join(' ')
+          })
+          break
+      }
+    },
     async run() {
       const headStyle = createElement('style')(Data.code.css.code)
-      
-      // ! would fail
-      // const proxyConsoleFn = function proxyConsoleFn() {
-      //   console.log('Data : ', Data)
-      //   const log = console.log
-      //   console.log = function (...args) {
-      //     Data.logs.push({
-      //       message: args
-      //     })
-      //     log(...args)
-      //   }
-      // }.bind(Data)
-
-      // ! tricky way
-      window._Data = Data
-      const proxyConsoleFn = () => {
-        (0, eval)(`
-          const logs = this.parent._Data.logs
-          const log = console.log
-          console.log = function (...args) {
-          logs.push({
-            message: args.toString()
-          })
-          log(...args)
-        }
-        `)
-      }
-
-      const proxyConsole = createElement('script')(`(${proxyConsoleFn.toString()})()`)
-      console.log('proxyConsole : ', proxyConsole)
+      const proxyConsole = createElement('script')(proxyConsoleFn)
       const script = createElement('script')(Data.code.js.code)
       const html = Data.code.html.code
 

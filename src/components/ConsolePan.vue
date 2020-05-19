@@ -12,6 +12,7 @@
         class="console-log"
         v-for="(log, index) in logs"
         :key="index"
+        :class="log.type"
         v-html="log.message">
       </div>
     </div>
@@ -77,6 +78,11 @@ export default {
 
   &:first-child
     border-top: 1px solid #eee
+    
+  &.warn
+    background: #FEFED4
+  &.error
+    background: #FED4D4
 
 .console-log-error
   color: red
