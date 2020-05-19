@@ -18,6 +18,9 @@ export default new Vue({
                     code: ''
                 },
             },
+            logs: [{
+                message: 'Empty Console'
+            }],
             visiblePans: ['html', 'css', 'js', 'output'],
             activePan: '',
             autoRun: true,

@@ -22,8 +22,9 @@
         JS
       </span>
       <span
-        class="pan-toggle disabled"
-        :class="{visible: isVisible('console')}">
+        class="pan-toggle"
+        :class="{visible: isVisible('console')}"
+        @click="togglePan('console')">
         Console
       </span>
       <span
@@ -75,7 +76,7 @@
 .header
   box-sizing: border-box
   height: 40px
-  border-bottom: 1px solid #bfbfbf
+  border-bottom: 1px solid #eee
   background-color: white
   display: flex
   align-items: center
@@ -121,7 +122,7 @@
     white-space: nowrap
     cursor: pointer
     background: #FFF
-    border: 1px solid #DCDFE6
+    border: 1px solid #eee
     color: #606266
     -webkit-appearance: none
     text-align: center
@@ -150,13 +151,15 @@
   height: 100%
 
   .pan-toggle
-    display: flex
-    align-items: center
-    height: 100%
-    border-left: 1px solid #e2e2e2
-    border-right: @border-left
     position: relative
+    display: flex
+    justify-content: center
+    align-items: center
     padding: 0 10px
+    height: 100%
+    min-width: 50px
+    border-left: 1px solid #eee
+    border-right: @border-left
     cursor: pointer
     user-select: none
 
@@ -171,7 +174,7 @@
         background-color: #f9f9f9
 
     &.visible
-      background-color: #EBF3FF
+      background-color: #e8f2ff
 
 .editor-save-status
   display: flex

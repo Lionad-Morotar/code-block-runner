@@ -68,11 +68,42 @@ export default {
   methods: {
     async run() {
       const headStyle = createElement('style')(Data.code.css.code)
-      const runTime = createElement('script')(Data.code.js.code)
+      
+      // ! would fail
+      // const proxyConsoleFn = function proxyConsoleFn() {
+      //   console.log('Data : ', Data)
+      //   const log = console.log
+      //   console.log = function (...args) {
+      //     Data.logs.push({
+      //       message: args
+      //     })
+      //     log(...args)
+      //   }
+      // }.bind(Data)
+
+      // ! tricky way
+      window._Data = Data
+      const proxyConsoleFn = () => {
+        (0, eval)(`
+          const logs = this.parent._Data.logs
+          const log = console.log
+          console.log = function (...args) {
+          logs.push({
+            message: args.toString()
+          })
+          log(...args)
+        }
+        `)
+      }
+
+      const proxyConsole = createElement('script')(`(${proxyConsoleFn.toString()})()`)
+      console.log('proxyConsole : ', proxyConsole)
+      const script = createElement('script')(Data.code.js.code)
       const html = Data.code.html.code
 
+      Data.logs.splice(0, Data.logs.length)
       this.iframe.setHTML({
-        head: headStyle + runTime,
+        head: headStyle + proxyConsole + script,
         body: html
       })
     },

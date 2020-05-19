@@ -1,8 +1,7 @@
-import Data from '@/data'
-
 import PanResizer from '@/components/PanResizer.vue'
 import createEditor from '@/utils/create-editor'
 import panPosition from '@/utils/pan-position'
+import Data from '@/data'
 
 export default ({ name, editor, components } = {}) => {
   return {

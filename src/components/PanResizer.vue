@@ -94,7 +94,7 @@ export default {
   height: 100%
   top: 0
   right: 0
-  border-right: 1px solid #e2e2e2
+  border-right: 1px solid #eee
   z-index: 1000
 
   &.enable:hover

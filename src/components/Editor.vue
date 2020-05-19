@@ -5,7 +5,7 @@
       <HTMLPan class="pan" v-show="isVisible('html')" />
       <CSSPan class="pan" v-show="isVisible('css')" />
       <JSPan class="pan" v-show="isVisible('js')" />
-      <!-- <console-pan class="pan" v-show="isVisible('console')" />  -->
+      <ConsolePan class="pan" v-show="isVisible('console')" /> 
       <OutputPan class="pan" v-show="isVisible('output')" />
     </div>
   </div>
@@ -17,7 +17,7 @@ import HTMLPan from '@/components/HTMLPan.vue'
 import CSSPan from '@/components/CSSPan.vue'
 import JSPan from '@/components/JSPan.vue'
 import OutputPan from '@/components/OutputPan.vue'
-// import ConsolePan from '@/components/ConsolePan.vue'
+import ConsolePan from '@/components/ConsolePan.vue'
 
 import Data from '../data'
 import { inIframe } from '@/utils'
@@ -29,7 +29,7 @@ export default {
     CSSPan,
     JSPan,
     OutputPan,
-    // 'console-pan': ConsolePan,
+    ConsolePan
   },
   props: {
     border: {
@@ -52,7 +52,7 @@ export default {
   },
   created() {
     if (inIframe || this.border) {
-      this.$set(this.style, 'border', this.style.border || 'solid 1px #ddd')
+      this.$set(this.style, 'border', this.style.border || 'solid 1px #eee')
       this.$set(this.style, 'border-radius', this.style['border-radius'] || '1px')
     }
   },
@@ -138,9 +138,12 @@ pre > code
   height: 40px
   padding: 0 10px
   font-size: 14px
+  font-weight: bold
+  letter-spacing: .5px
   display: flex
   justify-content: space-between
   align-items: center
+
   svg.svg-icon
     margin-left: 5px
     cursor: pointer
