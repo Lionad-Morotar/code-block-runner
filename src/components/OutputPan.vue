@@ -8,7 +8,7 @@
       Output
     </div>
     <div class="output-iframe" id="output-iframe">
-      <div id="output-iframe-holder"></div>
+      <div ref="output-iframe-holder"></div>
     </div>
   </div>
 </template>
@@ -39,6 +39,8 @@ export default {
   name: 'output-pan',
   data() {
     return {
+      iframeID: null,
+      proxyConsoleFn: null,
       style: {}
     }
   },
@@ -49,7 +51,7 @@ export default {
   },
   mounted() {
     this.iframe = createIframe({
-      el: document.getElementById('output-iframe-holder'),
+      el: this.$refs['output-iframe-holder'],
       sandboxAttributes
     })
     this.style = panPosition(Get(this).$store.visiblePans, 'output')
@@ -63,31 +65,36 @@ export default {
         ...style
       }
     })
-    window.addEventListener('message', this.listenIframe)
+    this.iframeID = `iframe-${this._uid}-${String(Math.random()).slice(-6)}`
+    this.proxyConsoleFn = proxyConsoleFn.replace(/\/\* FLAG-MESSAGE-ID \*\//g, `id: '${this.iframeID}',`)
+    window.addEventListener('message', this.listenMessage)
   },
   beforeDestroy() {
-    window.removeEventListener('message', this.listenIframe)
+    window.removeEventListener('message', this.listenMessage)
   },
   methods: {
-    async listenIframe({ data = {} }) {
-      switch (data.type) {
-        case 'iframe-error':
-          Get(this).$store.logs.push({
-            type: 'error',
-            message: data.message
-          })
-          break
-        case 'console':
-          Get(this).$store.logs.push({
-            type: data.method,
-            message: data.args.map(x => JSON.stringify ? JSON.stringify(x) : x).join(' ')
-          })
-          break
+    async listenMessage({ data = {} }) {
+      // 保证同一页面多个事件兼听不冲突
+      if (data.id === this.iframeID) {
+        switch (data.type) {
+          case 'iframe-error':
+            Get(this).$store.logs.push({
+              type: 'error',
+              message: data.message
+            })
+            break
+          case 'console':
+            Get(this).$store.logs.push({
+              type: data.method,
+              message: data.args.map(x => JSON.stringify ? JSON.stringify(x) : x).join(' ')
+            })
+            break
+        }
       }
     },
     async run() {
       const headStyle = createElement('style')(Get(this).$store.code.css.code)
-      const proxyConsole = createElement('script')(proxyConsoleFn)
+      const proxyConsole = createElement('script')(this.proxyConsoleFn)
       const script = createElement('script')(Get(this).$store.code.js.code)
       const html = Get(this).$store.code.html.code
 

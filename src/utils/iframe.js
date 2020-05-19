@@ -1,5 +1,7 @@
+const defaultSandboxAttributes = []
+
 class Iframe {
-  constructor({ el, sandboxAttributes = [] }) {
+  constructor({ el, sandboxAttributes = defaultSandboxAttributes }) {
     if (!el) {
       throw new Error('Expect "el" to mount iframe to!')
     }

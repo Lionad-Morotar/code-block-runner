@@ -1,7 +1,8 @@
 (function () {
 
     window.onerror = function (message) {
-        window.parent.postMessage({ 
+        window.parent.postMessage({
+            /* FLAG-MESSAGE-ID */
             type: 'iframe-error', 
             message 
         }, '*')
@@ -40,6 +41,7 @@
         newConsole[method] = function (...args) {
             originalMethod(...args)
             window.parent.postMessage({
+                /* FLAG-MESSAGE-ID */
                 args,
                 method,
                 type: 'console',

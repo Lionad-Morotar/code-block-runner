@@ -10,8 +10,8 @@
     <div class="console-logs" ref="console">
       <div
         class="console-log"
-        v-for="(log, index) in logs"
-        :key="index"
+        v-for="log in logs"
+        :key="log.message"
         :class="log.type"
         v-html="log.message">
       </div>
