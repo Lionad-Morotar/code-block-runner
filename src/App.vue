@@ -1,8 +1,10 @@
 <template>
   <div id="app">
     <Editor
-      :visiblePans="['js', 'console']"
-      js="function test() {console.log('asdf')}; test()"
+      :visiblePans="['html', 'css', 'js', 'console', 'output']"
+      :html="html"
+      :css="css"
+      :js="js"
     />
   </div>
 </template>
@@ -13,6 +15,13 @@ export default {
   name: 'app',
   components: {
     Editor
+  },
+  data() {
+    return {
+      html: require('!!raw-loader!./examples/simple/html.html').default,
+      css: require('!!raw-loader!./examples/simple/css.css').default,
+      js: require('!!raw-loader!./examples/simple/js.js').default,
+    }
   }
 }
 </script>
