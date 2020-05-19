@@ -80,7 +80,7 @@ export default {
         case 'console':
           Data.logs.push({
             type: data.method,
-            message: data.args.map(x => x.toString ? x.toString() : x).join(' ')
+            message: data.args.map(x => JSON.stringify ? JSON.stringify(x) : x).join(' ')
           })
           break
       }
