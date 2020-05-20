@@ -54,6 +54,7 @@ export default {
       el: this.$refs['output-iframe-holder'],
       sandboxAttributes
     })
+    
     this.style = panPosition(Get(this).$store.visiblePans, 'output')
       Get(this).$store.$on('visiblePans-change', val => {
         this.style = panPosition(val, 'output')

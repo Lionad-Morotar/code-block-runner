@@ -10,8 +10,8 @@
     <div class="console-logs" ref="console">
       <div
         class="console-log"
-        v-for="log in logs"
-        :key="log.message"
+        v-for="(log, idx) in logs"
+        :key="idx + log.message"
         :class="log.type"
         v-html="log.message">
       </div>
@@ -45,7 +45,8 @@ export default {
   mounted() {
     Get(this).$store.$on('visiblePans-change', val => {
       this.style = panPosition(val, 'console')
-    }),
+    })
+    this.style = panPosition(Get(this).$store.visiblePans, 'console')
     Get(this).$store.$on(`set-console-pan-style`, style => {
       this.style = {
         ...this.style,

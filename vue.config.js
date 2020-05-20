@@ -1,5 +1,6 @@
 module.exports = {
     css: {
-        extract: false
+        // For SSR Component
+        extract: true
     }
 }

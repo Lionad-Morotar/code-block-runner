@@ -19,8 +19,8 @@ import JSPan from '@/components/JSPan.vue'
 import OutputPan from '@/components/OutputPan.vue'
 import ConsolePan from '@/components/ConsolePan.vue'
 
-import Data from '@/data'
-import { inIframe } from '@/utils'
+import Data from '@/utils/data'
+import { isInIframe } from '@/utils'
 import Get from '@/utils/get-parent-attrs'
 import { COMPONENT_NAME } from '@/utils/get-parent-attrs'
 
@@ -56,13 +56,12 @@ export default {
       }
     }
   },
-  created() {
-    if (inIframe || this.border) {
+  mounted() {
+    if (isInIframe() || this.border) {
       this.$set(this.style, 'border', this.style.border || 'solid 1px #eee')
       this.$set(this.style, 'border-radius', this.style['border-radius'] || '1px')
     }
-  },
-  mounted() {
+    
     Get(this).$store.visiblePans = this.visiblePans || Get(this).$store.visiblePans
     Get(this).$store.code.html.code = this.html || ''
     Get(this).$store.code.css.code = this.css || ''

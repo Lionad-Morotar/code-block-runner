@@ -8,4 +8,4 @@ export const getHumanizedTransformerName = transformer => {
   return names[transformer] || transformer
 }
 
-export const inIframe = window.self !== window.top
+export const isInIframe = () => window && window.self !== window.top

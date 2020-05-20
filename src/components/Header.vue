@@ -46,16 +46,12 @@
 </template>
 
 <script>
-import { inIframe } from '@/utils'
 import Get from '@/utils/get-parent-attrs'
 
 export default {
   data() {
     return {
-      version: process.env.VERSION,
-      latestCommit: process.env.LATEST_COMMIT,
-      inIframe,
-      url: window.location.href
+      url: window && window.location.href
     }
   },
   methods: {
