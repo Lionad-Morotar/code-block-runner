@@ -172,7 +172,7 @@ pre > code
 .cf-wrapper
   height: 40px
   line-height: 40px !important
-  z-index: 9999 !important
+  z-index: 9 !important
   padding: 0 10px !important
 
 .sponsor
