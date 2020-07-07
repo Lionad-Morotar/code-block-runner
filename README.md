@@ -4,6 +4,22 @@
 
 ![Preview](./assets/2020-07-07-21-17-07.png)
 
+## Size
+
+* Without CodeMirror
+
+|         File         |   Size    |  Gzipped  |
+| :------------------: | :-------: | :-------: |
+| dist\main.umd.min.js | 64.08 KiB | 21.70 KiB |
+|    dist\main.css     | 4.25 KiB  | 1.21 KiB  |
+
+* With CodeMirror
+
+|         File         |    Size    |  Gzipped  |
+| :------------------: | :--------: | :-------: |
+| dist\main.umd.min.js | 284.80 KiB | 93.93 KiB |
+|    dist\main.css     |  4.25 KiB  | 1.21 KiB  |
+
 ## Thanks
 
 * [codepan@egoist](https://github.com/egoist/codepan)。
