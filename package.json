@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "serve": "nodemon ./server.js",
     "dev": "vue-cli-service serve",
     "build": "vue-cli-service build --target lib --name main ./src/components/Editor.vue",
     "test": "npm run build  && http-server -c0 ./dist",
@@ -20,9 +21,11 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "express": "^4.17.1",
     "raw-loader": "^4.0.1",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
+    "vue-server-renderer": "^2.6.11",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
