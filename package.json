@@ -44,5 +44,5 @@
     "last 2 versions",
     "not dead"
   ],
-  "main": "./dist/main.umd.min.js"
+  "main": "index.js"
 }
