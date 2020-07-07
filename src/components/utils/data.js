@@ -4,7 +4,7 @@ import debounce from 'debounce'
 export default {
     create: function create() {
         return new Vue({
-            data () {
+            data() {
                 return {
                     code: {
                         html: {
@@ -18,23 +18,25 @@ export default {
                         css: {
                             name: 'CSS',
                             code: ''
-                        },
+                        }
                     },
-                    logs: [{
-                        message: 'Empty Console'
-                    }],
-                    visiblePans: ['html', 'css', 'js', 'output'],
+                    logs: [
+                        {
+                            message: 'Empty Console'
+                        }
+                    ],
+                    visiblePans: [],
                     activePan: '',
-                    autoRun: true,
+                    autoRun: true
                 }
             },
             watch: {
-                visiblePans () {
+                visiblePans() {
                     this.$emit('visiblePans-change', this.visiblePans)
                 },
                 code: {
                     deep: true,
-                    handler () {
+                    handler() {
                         if (this.autoRun) {
                             this.debounceRunCode()
                         }

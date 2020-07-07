@@ -1,89 +1,85 @@
 <template>
-  <div
-    class="pan-resizer"
-    :class="{ enable }"
-    ref="resizer"
-    @mousedown="handleMouseDown">
-  </div>
+    <div class="pan-resizer" :class="{ enable }" ref="resizer" @mousedown="handleMouseDown"></div>
 </template>
 
 <script>
-import Get from '@/utils/get-parent-attrs'
+import Get from './utils/get-parent-attrs'
 
 export default {
-  props: ['enable', 'pan'],
-  data() {
-    return {
-      resizing: false,
-      originalNextPanLeft: null,
-      originalNextPanRight: null,
-      originalCurrentPanRight: null,
-      originalCurrentPanLeft: null,
-      currentPan: null,
-      nextPan: null
-    }
-  },
-  computed: {
-    nextPanName() {
-      const currentIndex = Get(this).$store.visiblePans.indexOf(this.pan)
-      return Get(this).$store.visiblePans[currentIndex + 1]
-    }
-  },
-  methods: {
-    updateNextPan(style) {
-      Get(this).$store.$emit(`set-${this.nextPanName}-pan-style`, style)
-    },
-    updateCurrentPan(style) {
-      Get(this).$store.$emit(`set-${this.pan}-pan-style`, style)
-    },
-    getNextVisiblePan(current) {
-      const next = current.nextElementSibling
-      if (next && next.style.display === 'none') {
-        return this.getNextVisiblePan(next)
-      }
-      return next
-    },
-    handleMouseDown() {
-      this.resizing = true
-      this.currentPan = this.$refs.resizer.parentNode
-      this.nextPan = this.getNextVisiblePan(this.currentPan)
-      this.originalNextPanLeft = parseFloat(this.nextPan.style.left)
-      this.originalNextPanRight = parseFloat(this.nextPan.style.right)
-      this.originalCurrentPanRight = parseFloat(this.currentPan.style.right)
-      this.originalCurrentPanLeft = parseFloat(this.currentPan.style.left)
-
-      document.addEventListener('mousemove', this.handleMouseMove)
-      document.addEventListener('mouseup', this.handleMouseUp)
-
-      this.currentPan.parentNode.classList.add('resizing')
-      document.getElementById('output-iframe').classList.add('disable-mouse-events')
-    },
-    handleMouseUp() {
-      this.resizing = false
-
-      document.removeEventListener('mousemove', this.handleMouseMove)
-      document.removeEventListener('mouseup', this.handleMouseUp)
-
-      this.currentPan.parentNode.classList.remove('resizing')
-      document.getElementById('output-iframe').classList.remove('disable-mouse-events')
-
-      Get(this).$store.$emit('refresh-editor', { run: false })
-    },
-    handleMouseMove(e) {
-      if (this.resizing) {
-        e.preventDefault()
-        const newNextPanLeft = e.clientX / window.innerWidth * 100
-        if (
-            (newNextPanLeft - this.originalCurrentPanLeft > 5) &&
-          (100 - newNextPanLeft - this.originalNextPanRight > 5)
-        ) {
-          this.updateNextPan({ left: `${newNextPanLeft}%` })
-          const newCurrentPanRight = this.originalCurrentPanRight - (newNextPanLeft - this.originalNextPanLeft)
-          this.updateCurrentPan({ right: `${newCurrentPanRight}%` })
+    props: ['enable', 'pan'],
+    data() {
+        return {
+            resizing: false,
+            originalNextPanLeft: null,
+            originalNextPanRight: null,
+            originalCurrentPanRight: null,
+            originalCurrentPanLeft: null,
+            currentPan: null,
+            nextPan: null
         }
-      }
+    },
+    computed: {
+        nextPanName() {
+            const currentIndex = Get(this).$store.visiblePans.indexOf(this.pan)
+            return Get(this).$store.visiblePans[currentIndex + 1]
+        }
+    },
+    methods: {
+        updateNextPan(style) {
+            Get(this).$store.$emit(`set-${this.nextPanName}-pan-style`, style)
+        },
+        updateCurrentPan(style) {
+            Get(this).$store.$emit(`set-${this.pan}-pan-style`, style)
+        },
+        getNextVisiblePan(current) {
+            const next = current.nextElementSibling
+            if (next && next.style.display === 'none') {
+                return this.getNextVisiblePan(next)
+            }
+            return next
+        },
+        handleMouseDown() {
+            this.resizing = true
+            this.currentPan = this.$refs.resizer.parentNode
+            this.nextPan = this.getNextVisiblePan(this.currentPan)
+            this.originalNextPanLeft = parseFloat(this.nextPan.style.left)
+            this.originalNextPanRight = parseFloat(this.nextPan.style.right)
+            this.originalCurrentPanRight = parseFloat(this.currentPan.style.right)
+            this.originalCurrentPanLeft = parseFloat(this.currentPan.style.left)
+
+            document.addEventListener('mousemove', this.handleMouseMove)
+            document.addEventListener('mouseup', this.handleMouseUp)
+
+            this.currentPan.parentNode.classList.add('resizing')
+            document.getElementById('output-iframe').classList.add('disable-mouse-events')
+        },
+        handleMouseUp() {
+            this.resizing = false
+
+            document.removeEventListener('mousemove', this.handleMouseMove)
+            document.removeEventListener('mouseup', this.handleMouseUp)
+
+            this.currentPan.parentNode.classList.remove('resizing')
+            document.getElementById('output-iframe').classList.remove('disable-mouse-events')
+
+            Get(this).$store.$emit('refresh-editor', { run: false })
+        },
+        handleMouseMove(e) {
+            if (this.resizing) {
+                e.preventDefault()
+                const newNextPanLeft = (e.clientX / window.innerWidth) * 100
+                if (
+                    newNextPanLeft - this.originalCurrentPanLeft > 5 &&
+                    100 - newNextPanLeft - this.originalNextPanRight > 5
+                ) {
+                    this.updateNextPan({ left: `${newNextPanLeft}%` })
+                    const newCurrentPanRight =
+                        this.originalCurrentPanRight - (newNextPanLeft - this.originalNextPanLeft)
+                    this.updateCurrentPan({ right: `${newCurrentPanRight}%` })
+                }
+            }
+        }
     }
-  }
 }
 </script>
 
