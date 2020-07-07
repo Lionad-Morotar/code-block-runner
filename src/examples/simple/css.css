@@ -1,4 +1,13 @@
-hello-world { 
+body {
+  padding: 1em;
+  border: 1px solid;
+}
+h4 { 
+  margin: .5em 0;
   font-size: 2em; 
   font-weight: bold; 
+  color: #999;
+}
+p {
+  margin: .5em 0;
 }

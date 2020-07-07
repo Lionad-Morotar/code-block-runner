@@ -6,12 +6,13 @@ import Get from './get-parent-attrs'
 import utils from '../../utils'
 
 async function loadCodeMirror() {
+    await utils.loadCSSFromURL('https://cdn.jsdelivr.net/npm/codemirror@5/lib/codemirror.css')
     await utils.loadScriptFromURL('https://cdn.jsdelivr.net/npm/codemirror@5/lib/codemirror.min.js')
     await utils.loadScriptFromURL('https://cdn.jsdelivr.net/npm/codemirror@5.54.0/addon/selection/active-line.min.js')
+    await utils.loadScriptFromURL('https://cdn.jsdelivr.net/npm/codemirror@5/mode/css/css.min.js')
+    await utils.loadScriptFromURL('https://cdn.jsdelivr.net/npm/codemirror@5/mode/htmlmixed/htmlmixed.min.js')
     // ! 出现了 indent 报错，暂时去掉语言 mode
-    // await utils.loadScriptFromURL('https://cdn.jsdelivr.net/npm/codemirror@5/mode/jsx/jsx.min.js')
-    // await utils.loadScriptFromURL('https://cdn.jsdelivr.net/npm/codemirror@5/mode/css/css.min.js')
-    // await utils.loadScriptFromURL('https://cdn.jsdelivr.net/npm/codemirror@5/mode/htmlmixed/htmlmixed.min.js')
+    // await utils.loadScriptFromURL('https://cdn.jsdelivr.net/npm/codemirror@5/mode/jsx/jsx.min.js')/
 }
 
 export default ({ name, editor, components } = {}) => {
