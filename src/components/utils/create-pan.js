@@ -1,4 +1,3 @@
-import PanResizer from '../PanResizer.vue'
 import createEditor from './create-editor'
 import panPosition from './pan-position'
 import Get from './get-parent-attrs'
@@ -78,7 +77,6 @@ export default ({ name, editor, components } = {}) => {
             }
         },
         components: {
-            PanResizer,
             ...components
         }
     }

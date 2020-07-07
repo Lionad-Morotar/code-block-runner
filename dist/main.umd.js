@@ -142,17 +142,6 @@ module.exports = function (fn, that, length) {
 
 /***/ }),
 
-/***/ "0405":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PanResizer_vue_vue_type_style_index_0_id_71e85d68_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("aa08");
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PanResizer_vue_vue_type_style_index_0_id_71e85d68_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PanResizer_vue_vue_type_style_index_0_id_71e85d68_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PanResizer_vue_vue_type_style_index_0_id_71e85d68_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-
 /***/ "0538":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -217,194 +206,6 @@ module.exports.f = function getOwnPropertyNames(it) {
 
 /***/ }),
 
-/***/ "05dd":
-/***/ (function(module, exports, __webpack_require__) {
-
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
-
-/**
- * Tag-closer extension for CodeMirror.
- *
- * This extension adds an "autoCloseTags" option that can be set to
- * either true to get the default behavior, or an object to further
- * configure its behavior.
- *
- * These are supported options:
- *
- * `whenClosing` (default true)
- *   Whether to autoclose when the '/' of a closing tag is typed.
- * `whenOpening` (default true)
- *   Whether to autoclose the tag when the final '>' of an opening
- *   tag is typed.
- * `dontCloseTags` (default is empty tags for HTML, none for XML)
- *   An array of tag names that should not be autoclosed.
- * `indentTags` (default is block tags for HTML, none for XML)
- *   An array of tag names that should, when opened, cause a
- *   blank line to be added inside the tag, and the blank line and
- *   closing line to be indented.
- * `emptyTags` (default is none)
- *   An array of XML tag names that should be autoclosed with '/>'.
- *
- * See demos/closetag.html for a usage example.
- */
-
-(function(mod) {
-  if (true) // CommonJS
-    mod(__webpack_require__("56b3"), __webpack_require__("a2c1"));
-  else {}
-})(function(CodeMirror) {
-  CodeMirror.defineOption("autoCloseTags", false, function(cm, val, old) {
-    if (old != CodeMirror.Init && old)
-      cm.removeKeyMap("autoCloseTags");
-    if (!val) return;
-    var map = {name: "autoCloseTags"};
-    if (typeof val != "object" || val.whenClosing)
-      map["'/'"] = function(cm) { return autoCloseSlash(cm); };
-    if (typeof val != "object" || val.whenOpening)
-      map["'>'"] = function(cm) { return autoCloseGT(cm); };
-    cm.addKeyMap(map);
-  });
-
-  var htmlDontClose = ["area", "base", "br", "col", "command", "embed", "hr", "img", "input", "keygen", "link", "meta", "param",
-                       "source", "track", "wbr"];
-  var htmlIndent = ["applet", "blockquote", "body", "button", "div", "dl", "fieldset", "form", "frameset", "h1", "h2", "h3", "h4",
-                    "h5", "h6", "head", "html", "iframe", "layer", "legend", "object", "ol", "p", "select", "table", "ul"];
-
-  function autoCloseGT(cm) {
-    if (cm.getOption("disableInput")) return CodeMirror.Pass;
-    var ranges = cm.listSelections(), replacements = [];
-    var opt = cm.getOption("autoCloseTags");
-    for (var i = 0; i < ranges.length; i++) {
-      if (!ranges[i].empty()) return CodeMirror.Pass;
-      var pos = ranges[i].head, tok = cm.getTokenAt(pos);
-      var inner = CodeMirror.innerMode(cm.getMode(), tok.state), state = inner.state;
-      var tagInfo = inner.mode.xmlCurrentTag && inner.mode.xmlCurrentTag(state)
-      var tagName = tagInfo && tagInfo.name
-      if (!tagName) return CodeMirror.Pass
-
-      var html = inner.mode.configuration == "html";
-      var dontCloseTags = (typeof opt == "object" && opt.dontCloseTags) || (html && htmlDontClose);
-      var indentTags = (typeof opt == "object" && opt.indentTags) || (html && htmlIndent);
-
-      if (tok.end > pos.ch) tagName = tagName.slice(0, tagName.length - tok.end + pos.ch);
-      var lowerTagName = tagName.toLowerCase();
-      // Don't process the '>' at the end of an end-tag or self-closing tag
-      if (!tagName ||
-          tok.type == "string" && (tok.end != pos.ch || !/[\"\']/.test(tok.string.charAt(tok.string.length - 1)) || tok.string.length == 1) ||
-          tok.type == "tag" && tagInfo.close ||
-          tok.string.indexOf("/") == (pos.ch - tok.start - 1) || // match something like <someTagName />
-          dontCloseTags && indexOf(dontCloseTags, lowerTagName) > -1 ||
-          closingTagExists(cm, inner.mode.xmlCurrentContext && inner.mode.xmlCurrentContext(state) || [], tagName, pos, true))
-        return CodeMirror.Pass;
-
-      var emptyTags = typeof opt == "object" && opt.emptyTags;
-      if (emptyTags && indexOf(emptyTags, tagName) > -1) {
-        replacements[i] = { text: "/>", newPos: CodeMirror.Pos(pos.line, pos.ch + 2) };
-        continue;
-      }
-
-      var indent = indentTags && indexOf(indentTags, lowerTagName) > -1;
-      replacements[i] = {indent: indent,
-                         text: ">" + (indent ? "\n\n" : "") + "</" + tagName + ">",
-                         newPos: indent ? CodeMirror.Pos(pos.line + 1, 0) : CodeMirror.Pos(pos.line, pos.ch + 1)};
-    }
-
-    var dontIndentOnAutoClose = (typeof opt == "object" && opt.dontIndentOnAutoClose);
-    for (var i = ranges.length - 1; i >= 0; i--) {
-      var info = replacements[i];
-      cm.replaceRange(info.text, ranges[i].head, ranges[i].anchor, "+insert");
-      var sel = cm.listSelections().slice(0);
-      sel[i] = {head: info.newPos, anchor: info.newPos};
-      cm.setSelections(sel);
-      if (!dontIndentOnAutoClose && info.indent) {
-        cm.indentLine(info.newPos.line, null, true);
-        cm.indentLine(info.newPos.line + 1, null, true);
-      }
-    }
-  }
-
-  function autoCloseCurrent(cm, typingSlash) {
-    var ranges = cm.listSelections(), replacements = [];
-    var head = typingSlash ? "/" : "</";
-    var opt = cm.getOption("autoCloseTags");
-    var dontIndentOnAutoClose = (typeof opt == "object" && opt.dontIndentOnSlash);
-    for (var i = 0; i < ranges.length; i++) {
-      if (!ranges[i].empty()) return CodeMirror.Pass;
-      var pos = ranges[i].head, tok = cm.getTokenAt(pos);
-      var inner = CodeMirror.innerMode(cm.getMode(), tok.state), state = inner.state;
-      if (typingSlash && (tok.type == "string" || tok.string.charAt(0) != "<" ||
-                          tok.start != pos.ch - 1))
-        return CodeMirror.Pass;
-      // Kludge to get around the fact that we are not in XML mode
-      // when completing in JS/CSS snippet in htmlmixed mode. Does not
-      // work for other XML embedded languages (there is no general
-      // way to go from a mixed mode to its current XML state).
-      var replacement, mixed = inner.mode.name != "xml" && cm.getMode().name == "htmlmixed"
-      if (mixed && inner.mode.name == "javascript") {
-        replacement = head + "script";
-      } else if (mixed && inner.mode.name == "css") {
-        replacement = head + "style";
-      } else {
-        var context = inner.mode.xmlCurrentContext && inner.mode.xmlCurrentContext(state)
-        if (!context || (context.length && closingTagExists(cm, context, context[context.length - 1], pos)))
-          return CodeMirror.Pass;
-        replacement = head + context[context.length - 1]
-      }
-      if (cm.getLine(pos.line).charAt(tok.end) != ">") replacement += ">";
-      replacements[i] = replacement;
-    }
-    cm.replaceSelections(replacements);
-    ranges = cm.listSelections();
-    if (!dontIndentOnAutoClose) {
-        for (var i = 0; i < ranges.length; i++)
-            if (i == ranges.length - 1 || ranges[i].head.line < ranges[i + 1].head.line)
-                cm.indentLine(ranges[i].head.line);
-    }
-  }
-
-  function autoCloseSlash(cm) {
-    if (cm.getOption("disableInput")) return CodeMirror.Pass;
-    return autoCloseCurrent(cm, true);
-  }
-
-  CodeMirror.commands.closeTag = function(cm) { return autoCloseCurrent(cm); };
-
-  function indexOf(collection, elt) {
-    if (collection.indexOf) return collection.indexOf(elt);
-    for (var i = 0, e = collection.length; i < e; ++i)
-      if (collection[i] == elt) return i;
-    return -1;
-  }
-
-  // If xml-fold is loaded, we use its functionality to try and verify
-  // whether a given tag is actually unclosed.
-  function closingTagExists(cm, context, tagName, pos, newTag) {
-    if (!CodeMirror.scanForClosingTag) return false;
-    var end = Math.min(cm.lastLine() + 1, pos.line + 500);
-    var nextClose = CodeMirror.scanForClosingTag(cm, pos, null, end);
-    if (!nextClose || nextClose.tag != tagName) return false;
-    // If the immediate wrapping context contains onCx instances of
-    // the same tag, a closing tag only exists if there are at least
-    // that many closing tags of that type following.
-    var onCx = newTag ? 1 : 0
-    for (var i = context.length - 1; i >= 0; i--) {
-      if (context[i] == tagName) ++onCx
-      else break
-    }
-    pos = nextClose.to;
-    for (var i = 1; i < onCx; i++) {
-      var next = CodeMirror.scanForClosingTag(cm, pos, null, end);
-      if (!next || next.tag != tagName) return false;
-      pos = next.to;
-    }
-    return true;
-  }
-});
-
-
-/***/ }),
-
 /***/ "06cf":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -449,209 +250,10 @@ module.exports = !DESCRIPTORS && !fails(function () {
 
 /***/ }),
 
-/***/ "10b2":
+/***/ "1298":
 /***/ (function(module, exports, __webpack_require__) {
 
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
-
-(function(mod) {
-  if (true) // CommonJS
-    mod(__webpack_require__("56b3"));
-  else {}
-})(function(CodeMirror) {
-  var defaults = {
-    pairs: "()[]{}''\"\"",
-    closeBefore: ")]}'\":;>",
-    triples: "",
-    explode: "[]{}"
-  };
-
-  var Pos = CodeMirror.Pos;
-
-  CodeMirror.defineOption("autoCloseBrackets", false, function(cm, val, old) {
-    if (old && old != CodeMirror.Init) {
-      cm.removeKeyMap(keyMap);
-      cm.state.closeBrackets = null;
-    }
-    if (val) {
-      ensureBound(getOption(val, "pairs"))
-      cm.state.closeBrackets = val;
-      cm.addKeyMap(keyMap);
-    }
-  });
-
-  function getOption(conf, name) {
-    if (name == "pairs" && typeof conf == "string") return conf;
-    if (typeof conf == "object" && conf[name] != null) return conf[name];
-    return defaults[name];
-  }
-
-  var keyMap = {Backspace: handleBackspace, Enter: handleEnter};
-  function ensureBound(chars) {
-    for (var i = 0; i < chars.length; i++) {
-      var ch = chars.charAt(i), key = "'" + ch + "'"
-      if (!keyMap[key]) keyMap[key] = handler(ch)
-    }
-  }
-  ensureBound(defaults.pairs + "`")
-
-  function handler(ch) {
-    return function(cm) { return handleChar(cm, ch); };
-  }
-
-  function getConfig(cm) {
-    var deflt = cm.state.closeBrackets;
-    if (!deflt || deflt.override) return deflt;
-    var mode = cm.getModeAt(cm.getCursor());
-    return mode.closeBrackets || deflt;
-  }
-
-  function handleBackspace(cm) {
-    var conf = getConfig(cm);
-    if (!conf || cm.getOption("disableInput")) return CodeMirror.Pass;
-
-    var pairs = getOption(conf, "pairs");
-    var ranges = cm.listSelections();
-    for (var i = 0; i < ranges.length; i++) {
-      if (!ranges[i].empty()) return CodeMirror.Pass;
-      var around = charsAround(cm, ranges[i].head);
-      if (!around || pairs.indexOf(around) % 2 != 0) return CodeMirror.Pass;
-    }
-    for (var i = ranges.length - 1; i >= 0; i--) {
-      var cur = ranges[i].head;
-      cm.replaceRange("", Pos(cur.line, cur.ch - 1), Pos(cur.line, cur.ch + 1), "+delete");
-    }
-  }
-
-  function handleEnter(cm) {
-    var conf = getConfig(cm);
-    var explode = conf && getOption(conf, "explode");
-    if (!explode || cm.getOption("disableInput")) return CodeMirror.Pass;
-
-    var ranges = cm.listSelections();
-    for (var i = 0; i < ranges.length; i++) {
-      if (!ranges[i].empty()) return CodeMirror.Pass;
-      var around = charsAround(cm, ranges[i].head);
-      if (!around || explode.indexOf(around) % 2 != 0) return CodeMirror.Pass;
-    }
-    cm.operation(function() {
-      var linesep = cm.lineSeparator() || "\n";
-      cm.replaceSelection(linesep + linesep, null);
-      cm.execCommand("goCharLeft");
-      ranges = cm.listSelections();
-      for (var i = 0; i < ranges.length; i++) {
-        var line = ranges[i].head.line;
-        cm.indentLine(line, null, true);
-        cm.indentLine(line + 1, null, true);
-      }
-    });
-  }
-
-  function contractSelection(sel) {
-    var inverted = CodeMirror.cmpPos(sel.anchor, sel.head) > 0;
-    return {anchor: new Pos(sel.anchor.line, sel.anchor.ch + (inverted ? -1 : 1)),
-            head: new Pos(sel.head.line, sel.head.ch + (inverted ? 1 : -1))};
-  }
-
-  function handleChar(cm, ch) {
-    var conf = getConfig(cm);
-    if (!conf || cm.getOption("disableInput")) return CodeMirror.Pass;
-
-    var pairs = getOption(conf, "pairs");
-    var pos = pairs.indexOf(ch);
-    if (pos == -1) return CodeMirror.Pass;
-
-    var closeBefore = getOption(conf,"closeBefore");
-
-    var triples = getOption(conf, "triples");
-
-    var identical = pairs.charAt(pos + 1) == ch;
-    var ranges = cm.listSelections();
-    var opening = pos % 2 == 0;
-
-    var type;
-    for (var i = 0; i < ranges.length; i++) {
-      var range = ranges[i], cur = range.head, curType;
-      var next = cm.getRange(cur, Pos(cur.line, cur.ch + 1));
-      if (opening && !range.empty()) {
-        curType = "surround";
-      } else if ((identical || !opening) && next == ch) {
-        if (identical && stringStartsAfter(cm, cur))
-          curType = "both";
-        else if (triples.indexOf(ch) >= 0 && cm.getRange(cur, Pos(cur.line, cur.ch + 3)) == ch + ch + ch)
-          curType = "skipThree";
-        else
-          curType = "skip";
-      } else if (identical && cur.ch > 1 && triples.indexOf(ch) >= 0 &&
-                 cm.getRange(Pos(cur.line, cur.ch - 2), cur) == ch + ch) {
-        if (cur.ch > 2 && /\bstring/.test(cm.getTokenTypeAt(Pos(cur.line, cur.ch - 2)))) return CodeMirror.Pass;
-        curType = "addFour";
-      } else if (identical) {
-        var prev = cur.ch == 0 ? " " : cm.getRange(Pos(cur.line, cur.ch - 1), cur)
-        if (!CodeMirror.isWordChar(next) && prev != ch && !CodeMirror.isWordChar(prev)) curType = "both";
-        else return CodeMirror.Pass;
-      } else if (opening && (next.length === 0 || /\s/.test(next) || closeBefore.indexOf(next) > -1)) {
-        curType = "both";
-      } else {
-        return CodeMirror.Pass;
-      }
-      if (!type) type = curType;
-      else if (type != curType) return CodeMirror.Pass;
-    }
-
-    var left = pos % 2 ? pairs.charAt(pos - 1) : ch;
-    var right = pos % 2 ? ch : pairs.charAt(pos + 1);
-    cm.operation(function() {
-      if (type == "skip") {
-        cm.execCommand("goCharRight");
-      } else if (type == "skipThree") {
-        for (var i = 0; i < 3; i++)
-          cm.execCommand("goCharRight");
-      } else if (type == "surround") {
-        var sels = cm.getSelections();
-        for (var i = 0; i < sels.length; i++)
-          sels[i] = left + sels[i] + right;
-        cm.replaceSelections(sels, "around");
-        sels = cm.listSelections().slice();
-        for (var i = 0; i < sels.length; i++)
-          sels[i] = contractSelection(sels[i]);
-        cm.setSelections(sels);
-      } else if (type == "both") {
-        cm.replaceSelection(left + right, null);
-        cm.triggerElectric(left + right);
-        cm.execCommand("goCharLeft");
-      } else if (type == "addFour") {
-        cm.replaceSelection(left + left + left + left, "before");
-        cm.execCommand("goCharRight");
-      }
-    });
-  }
-
-  function charsAround(cm, pos) {
-    var str = cm.getRange(Pos(pos.line, pos.ch - 1),
-                          Pos(pos.line, pos.ch + 1));
-    return str.length == 2 ? str : null;
-  }
-
-  function stringStartsAfter(cm, pos) {
-    var token = cm.getTokenAt(Pos(pos.line, pos.ch + 1))
-    return /\bstring/.test(token.type) && token.start == pos.ch &&
-      (pos.ch == 0 || !/\bstring/.test(cm.getTokenTypeAt(pos)))
-  }
-});
-
-
-/***/ }),
-
-/***/ "129b":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Header_vue_vue_type_style_index_0_id_54d4cf22_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("633b");
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Header_vue_vue_type_style_index_0_id_54d4cf22_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Header_vue_vue_type_style_index_0_id_54d4cf22_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Header_vue_vue_type_style_index_0_id_54d4cf22_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
+// extracted by mini-css-extract-plugin
 
 /***/ }),
 
@@ -702,69 +304,6 @@ for (var COLLECTION_NAME in DOMIterables) {
     CollectionPrototype.forEach = forEach;
   }
 }
-
-
-/***/ }),
-
-/***/ "164b":
-/***/ (function(module, exports, __webpack_require__) {
-
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
-
-(function(mod) {
-  if (true) // CommonJS
-    mod(__webpack_require__("56b3"));
-  else {}
-})(function(CodeMirror) {
-"use strict";
-
-CodeMirror.registerGlobalHelper("fold", "comment", function(mode) {
-  return mode.blockCommentStart && mode.blockCommentEnd;
-}, function(cm, start) {
-  var mode = cm.getModeAt(start), startToken = mode.blockCommentStart, endToken = mode.blockCommentEnd;
-  if (!startToken || !endToken) return;
-  var line = start.line, lineText = cm.getLine(line);
-
-  var startCh;
-  for (var at = start.ch, pass = 0;;) {
-    var found = at <= 0 ? -1 : lineText.lastIndexOf(startToken, at - 1);
-    if (found == -1) {
-      if (pass == 1) return;
-      pass = 1;
-      at = lineText.length;
-      continue;
-    }
-    if (pass == 1 && found < start.ch) return;
-    if (/comment/.test(cm.getTokenTypeAt(CodeMirror.Pos(line, found + 1))) &&
-        (found == 0 || lineText.slice(found - endToken.length, found) == endToken ||
-         !/comment/.test(cm.getTokenTypeAt(CodeMirror.Pos(line, found))))) {
-      startCh = found + startToken.length;
-      break;
-    }
-    at = found - 1;
-  }
-
-  var depth = 1, lastLine = cm.lastLine(), end, endCh;
-  outer: for (var i = line; i <= lastLine; ++i) {
-    var text = cm.getLine(i), pos = i == line ? startCh : 0;
-    for (;;) {
-      var nextOpen = text.indexOf(startToken, pos), nextClose = text.indexOf(endToken, pos);
-      if (nextOpen < 0) nextOpen = text.length;
-      if (nextClose < 0) nextClose = text.length;
-      pos = Math.min(nextOpen, nextClose);
-      if (pos == text.length) break;
-      if (pos == nextOpen) ++depth;
-      else if (!--depth) { end = i; endCh = pos; break outer; }
-      ++pos;
-    }
-  }
-  if (end == null || line == end && endCh == startCh) return;
-  return {from: CodeMirror.Pos(line, startCh),
-          to: CodeMirror.Pos(end, endCh)};
-});
-
-});
 
 
 /***/ }),
@@ -915,17 +454,6 @@ module.exports = function (METHOD_NAME) {
   });
 };
 
-
-/***/ }),
-
-/***/ "2126":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Editor_vue_vue_type_style_index_4_lang_stylus___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("65b8");
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Editor_vue_vue_type_style_index_4_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Editor_vue_vue_type_style_index_4_lang_stylus___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Editor_vue_vue_type_style_index_4_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
@@ -1277,82 +805,6 @@ module.exports = version && +version;
 
 /***/ }),
 
-/***/ "31c5":
-/***/ (function(module, exports, __webpack_require__) {
-
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
-
-(function(mod) {
-  if (true) // CommonJS
-    mod(__webpack_require__("56b3"));
-  else {}
-})(function(CodeMirror) {
-  "use strict";
-  var WRAP_CLASS = "CodeMirror-activeline";
-  var BACK_CLASS = "CodeMirror-activeline-background";
-  var GUTT_CLASS = "CodeMirror-activeline-gutter";
-
-  CodeMirror.defineOption("styleActiveLine", false, function(cm, val, old) {
-    var prev = old == CodeMirror.Init ? false : old;
-    if (val == prev) return
-    if (prev) {
-      cm.off("beforeSelectionChange", selectionChange);
-      clearActiveLines(cm);
-      delete cm.state.activeLines;
-    }
-    if (val) {
-      cm.state.activeLines = [];
-      updateActiveLines(cm, cm.listSelections());
-      cm.on("beforeSelectionChange", selectionChange);
-    }
-  });
-
-  function clearActiveLines(cm) {
-    for (var i = 0; i < cm.state.activeLines.length; i++) {
-      cm.removeLineClass(cm.state.activeLines[i], "wrap", WRAP_CLASS);
-      cm.removeLineClass(cm.state.activeLines[i], "background", BACK_CLASS);
-      cm.removeLineClass(cm.state.activeLines[i], "gutter", GUTT_CLASS);
-    }
-  }
-
-  function sameArray(a, b) {
-    if (a.length != b.length) return false;
-    for (var i = 0; i < a.length; i++)
-      if (a[i] != b[i]) return false;
-    return true;
-  }
-
-  function updateActiveLines(cm, ranges) {
-    var active = [];
-    for (var i = 0; i < ranges.length; i++) {
-      var range = ranges[i];
-      var option = cm.getOption("styleActiveLine");
-      if (typeof option == "object" && option.nonEmpty ? range.anchor.line != range.head.line : !range.empty())
-        continue
-      var line = cm.getLineHandleVisualStart(range.head.line);
-      if (active[active.length - 1] != line) active.push(line);
-    }
-    if (sameArray(cm.state.activeLines, active)) return;
-    cm.operation(function() {
-      clearActiveLines(cm);
-      for (var i = 0; i < active.length; i++) {
-        cm.addLineClass(active[i], "wrap", WRAP_CLASS);
-        cm.addLineClass(active[i], "background", BACK_CLASS);
-        cm.addLineClass(active[i], "gutter", GUTT_CLASS);
-      }
-      cm.state.activeLines = active;
-    });
-  }
-
-  function selectionChange(cm, sel) {
-    updateActiveLines(cm, sel.ranges);
-  }
-});
-
-
-/***/ }),
-
 /***/ "342f":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1401,17 +853,6 @@ module.exports = DESCRIPTORS ? Object.defineProperties : function defineProperti
   return O;
 };
 
-
-/***/ }),
-
-/***/ "3dd9":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_css_loader_dist_cjs_js_ref_6_oneOf_1_1_vue_loader_lib_loaders_stylePostLoader_js_postcss_loader_src_index_js_ref_6_oneOf_1_2_codemirror_css_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("8a8c");
-/* harmony import */ var _mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_css_loader_dist_cjs_js_ref_6_oneOf_1_1_vue_loader_lib_loaders_stylePostLoader_js_postcss_loader_src_index_js_ref_6_oneOf_1_2_codemirror_css_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_css_loader_dist_cjs_js_ref_6_oneOf_1_1_vue_loader_lib_loaders_stylePostLoader_js_postcss_loader_src_index_js_ref_6_oneOf_1_2_codemirror_css_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_css_loader_dist_cjs_js_ref_6_oneOf_1_1_vue_loader_lib_loaders_stylePostLoader_js_postcss_loader_src_index_js_ref_6_oneOf_1_2_codemirror_css_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
@@ -1505,167 +946,6 @@ module.exports = function (O, defaultConstructor) {
 
 /***/ }),
 
-/***/ "4895":
-/***/ (function(module, exports, __webpack_require__) {
-
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
-
-(function(mod) {
-  if (true) // CommonJS
-    mod(__webpack_require__("56b3"));
-  else {}
-})(function(CodeMirror) {
-  "use strict";
-
-  function doFold(cm, pos, options, force) {
-    if (options && options.call) {
-      var finder = options;
-      options = null;
-    } else {
-      var finder = getOption(cm, options, "rangeFinder");
-    }
-    if (typeof pos == "number") pos = CodeMirror.Pos(pos, 0);
-    var minSize = getOption(cm, options, "minFoldSize");
-
-    function getRange(allowFolded) {
-      var range = finder(cm, pos);
-      if (!range || range.to.line - range.from.line < minSize) return null;
-      var marks = cm.findMarksAt(range.from);
-      for (var i = 0; i < marks.length; ++i) {
-        if (marks[i].__isFold && force !== "fold") {
-          if (!allowFolded) return null;
-          range.cleared = true;
-          marks[i].clear();
-        }
-      }
-      return range;
-    }
-
-    var range = getRange(true);
-    if (getOption(cm, options, "scanUp")) while (!range && pos.line > cm.firstLine()) {
-      pos = CodeMirror.Pos(pos.line - 1, 0);
-      range = getRange(false);
-    }
-    if (!range || range.cleared || force === "unfold") return;
-
-    var myWidget = makeWidget(cm, options, range);
-    CodeMirror.on(myWidget, "mousedown", function(e) {
-      myRange.clear();
-      CodeMirror.e_preventDefault(e);
-    });
-    var myRange = cm.markText(range.from, range.to, {
-      replacedWith: myWidget,
-      clearOnEnter: getOption(cm, options, "clearOnEnter"),
-      __isFold: true
-    });
-    myRange.on("clear", function(from, to) {
-      CodeMirror.signal(cm, "unfold", cm, from, to);
-    });
-    CodeMirror.signal(cm, "fold", cm, range.from, range.to);
-  }
-
-  function makeWidget(cm, options, range) {
-    var widget = getOption(cm, options, "widget");
-
-    if (typeof widget == "function") {
-      widget = widget(range.from, range.to);
-    }
-
-    if (typeof widget == "string") {
-      var text = document.createTextNode(widget);
-      widget = document.createElement("span");
-      widget.appendChild(text);
-      widget.className = "CodeMirror-foldmarker";
-    } else if (widget) {
-      widget = widget.cloneNode(true)
-    }
-    return widget;
-  }
-
-  // Clumsy backwards-compatible interface
-  CodeMirror.newFoldFunction = function(rangeFinder, widget) {
-    return function(cm, pos) { doFold(cm, pos, {rangeFinder: rangeFinder, widget: widget}); };
-  };
-
-  // New-style interface
-  CodeMirror.defineExtension("foldCode", function(pos, options, force) {
-    doFold(this, pos, options, force);
-  });
-
-  CodeMirror.defineExtension("isFolded", function(pos) {
-    var marks = this.findMarksAt(pos);
-    for (var i = 0; i < marks.length; ++i)
-      if (marks[i].__isFold) return true;
-  });
-
-  CodeMirror.commands.toggleFold = function(cm) {
-    cm.foldCode(cm.getCursor());
-  };
-  CodeMirror.commands.fold = function(cm) {
-    cm.foldCode(cm.getCursor(), null, "fold");
-  };
-  CodeMirror.commands.unfold = function(cm) {
-    cm.foldCode(cm.getCursor(), null, "unfold");
-  };
-  CodeMirror.commands.foldAll = function(cm) {
-    cm.operation(function() {
-      for (var i = cm.firstLine(), e = cm.lastLine(); i <= e; i++)
-        cm.foldCode(CodeMirror.Pos(i, 0), null, "fold");
-    });
-  };
-  CodeMirror.commands.unfoldAll = function(cm) {
-    cm.operation(function() {
-      for (var i = cm.firstLine(), e = cm.lastLine(); i <= e; i++)
-        cm.foldCode(CodeMirror.Pos(i, 0), null, "unfold");
-    });
-  };
-
-  CodeMirror.registerHelper("fold", "combine", function() {
-    var funcs = Array.prototype.slice.call(arguments, 0);
-    return function(cm, start) {
-      for (var i = 0; i < funcs.length; ++i) {
-        var found = funcs[i](cm, start);
-        if (found) return found;
-      }
-    };
-  });
-
-  CodeMirror.registerHelper("fold", "auto", function(cm, start) {
-    var helpers = cm.getHelpers(start, "fold");
-    for (var i = 0; i < helpers.length; i++) {
-      var cur = helpers[i](cm, start);
-      if (cur) return cur;
-    }
-  });
-
-  var defaultOptions = {
-    rangeFinder: CodeMirror.fold.auto,
-    widget: "\u2194",
-    minFoldSize: 0,
-    scanUp: false,
-    clearOnEnter: true
-  };
-
-  CodeMirror.defineOption("foldOptions", null);
-
-  function getOption(cm, options, name) {
-    if (options && options[name] !== undefined)
-      return options[name];
-    var editorOptions = cm.options.foldOptions;
-    if (editorOptions && editorOptions[name] !== undefined)
-      return editorOptions[name];
-    return defaultOptions[name];
-  }
-
-  CodeMirror.defineExtension("foldOption", function(options, name) {
-    return getOption(this, options, name);
-  });
-});
-
-
-/***/ }),
-
 /***/ "4930":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1677,17 +957,6 @@ module.exports = !!Object.getOwnPropertySymbols && !fails(function () {
   return !String(Symbol());
 });
 
-
-/***/ }),
-
-/***/ "4978":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OutputPan_vue_vue_type_style_index_0_id_76fb334b_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("93b1");
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OutputPan_vue_vue_type_style_index_0_id_76fb334b_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OutputPan_vue_vue_type_style_index_0_id_76fb334b_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OutputPan_vue_vue_type_style_index_0_id_76fb334b_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
@@ -1811,6 +1080,17 @@ $({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGT
   }
 });
 
+
+/***/ }),
+
+/***/ "4ffa":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ConsolePan_vue_vue_type_style_index_0_id_06b1b677_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("af6d");
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ConsolePan_vue_vue_type_style_index_0_id_06b1b677_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ConsolePan_vue_vue_type_style_index_0_id_06b1b677_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ConsolePan_vue_vue_type_style_index_0_id_06b1b677_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
@@ -11793,17 +11073,6 @@ module.exports = getBuiltIn('Reflect', 'ownKeys') || function ownKeys(it) {
 
 /***/ }),
 
-/***/ "5756":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ConsolePan_vue_vue_type_style_index_0_id_52b013b5_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("6bb1");
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ConsolePan_vue_vue_type_style_index_0_id_52b013b5_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ConsolePan_vue_vue_type_style_index_0_id_52b013b5_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ConsolePan_vue_vue_type_style_index_0_id_52b013b5_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-
 /***/ "5c6c":
 /***/ (function(module, exports) {
 
@@ -11816,13 +11085,6 @@ module.exports = function (bitmap, value) {
   };
 };
 
-
-/***/ }),
-
-/***/ "633b":
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
 
 /***/ }),
 
@@ -11857,13 +11119,6 @@ module.exports = {
   charAt: createMethod(true)
 };
 
-
-/***/ }),
-
-/***/ "65b8":
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
 
 /***/ }),
 
@@ -11962,13 +11217,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "6bb1":
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-
-/***/ }),
-
 /***/ "6eeb":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12005,219 +11253,6 @@ var TEMPLATE = String(String).split('String');
 // add fake Function#toString for correct work wrapped methods / constructors with methods like LoDash isNative
 })(Function.prototype, 'toString', function toString() {
   return typeof this == 'function' && getInternalState(this).source || inspectSource(this);
-});
-
-
-/***/ }),
-
-/***/ "7289":
-/***/ (function(module, exports, __webpack_require__) {
-
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
-
-(function(mod) {
-  if (true) // CommonJS
-    mod(__webpack_require__("56b3"));
-  else {}
-})(function(CodeMirror) {
-  "use strict";
-
-  var noOptions = {};
-  var nonWS = /[^\s\u00a0]/;
-  var Pos = CodeMirror.Pos;
-
-  function firstNonWS(str) {
-    var found = str.search(nonWS);
-    return found == -1 ? 0 : found;
-  }
-
-  CodeMirror.commands.toggleComment = function(cm) {
-    cm.toggleComment();
-  };
-
-  CodeMirror.defineExtension("toggleComment", function(options) {
-    if (!options) options = noOptions;
-    var cm = this;
-    var minLine = Infinity, ranges = this.listSelections(), mode = null;
-    for (var i = ranges.length - 1; i >= 0; i--) {
-      var from = ranges[i].from(), to = ranges[i].to();
-      if (from.line >= minLine) continue;
-      if (to.line >= minLine) to = Pos(minLine, 0);
-      minLine = from.line;
-      if (mode == null) {
-        if (cm.uncomment(from, to, options)) mode = "un";
-        else { cm.lineComment(from, to, options); mode = "line"; }
-      } else if (mode == "un") {
-        cm.uncomment(from, to, options);
-      } else {
-        cm.lineComment(from, to, options);
-      }
-    }
-  });
-
-  // Rough heuristic to try and detect lines that are part of multi-line string
-  function probablyInsideString(cm, pos, line) {
-    return /\bstring\b/.test(cm.getTokenTypeAt(Pos(pos.line, 0))) && !/^[\'\"\`]/.test(line)
-  }
-
-  function getMode(cm, pos) {
-    var mode = cm.getMode()
-    return mode.useInnerComments === false || !mode.innerMode ? mode : cm.getModeAt(pos)
-  }
-
-  CodeMirror.defineExtension("lineComment", function(from, to, options) {
-    if (!options) options = noOptions;
-    var self = this, mode = getMode(self, from);
-    var firstLine = self.getLine(from.line);
-    if (firstLine == null || probablyInsideString(self, from, firstLine)) return;
-
-    var commentString = options.lineComment || mode.lineComment;
-    if (!commentString) {
-      if (options.blockCommentStart || mode.blockCommentStart) {
-        options.fullLines = true;
-        self.blockComment(from, to, options);
-      }
-      return;
-    }
-
-    var end = Math.min(to.ch != 0 || to.line == from.line ? to.line + 1 : to.line, self.lastLine() + 1);
-    var pad = options.padding == null ? " " : options.padding;
-    var blankLines = options.commentBlankLines || from.line == to.line;
-
-    self.operation(function() {
-      if (options.indent) {
-        var baseString = null;
-        for (var i = from.line; i < end; ++i) {
-          var line = self.getLine(i);
-          var whitespace = line.slice(0, firstNonWS(line));
-          if (baseString == null || baseString.length > whitespace.length) {
-            baseString = whitespace;
-          }
-        }
-        for (var i = from.line; i < end; ++i) {
-          var line = self.getLine(i), cut = baseString.length;
-          if (!blankLines && !nonWS.test(line)) continue;
-          if (line.slice(0, cut) != baseString) cut = firstNonWS(line);
-          self.replaceRange(baseString + commentString + pad, Pos(i, 0), Pos(i, cut));
-        }
-      } else {
-        for (var i = from.line; i < end; ++i) {
-          if (blankLines || nonWS.test(self.getLine(i)))
-            self.replaceRange(commentString + pad, Pos(i, 0));
-        }
-      }
-    });
-  });
-
-  CodeMirror.defineExtension("blockComment", function(from, to, options) {
-    if (!options) options = noOptions;
-    var self = this, mode = getMode(self, from);
-    var startString = options.blockCommentStart || mode.blockCommentStart;
-    var endString = options.blockCommentEnd || mode.blockCommentEnd;
-    if (!startString || !endString) {
-      if ((options.lineComment || mode.lineComment) && options.fullLines != false)
-        self.lineComment(from, to, options);
-      return;
-    }
-    if (/\bcomment\b/.test(self.getTokenTypeAt(Pos(from.line, 0)))) return
-
-    var end = Math.min(to.line, self.lastLine());
-    if (end != from.line && to.ch == 0 && nonWS.test(self.getLine(end))) --end;
-
-    var pad = options.padding == null ? " " : options.padding;
-    if (from.line > end) return;
-
-    self.operation(function() {
-      if (options.fullLines != false) {
-        var lastLineHasText = nonWS.test(self.getLine(end));
-        self.replaceRange(pad + endString, Pos(end));
-        self.replaceRange(startString + pad, Pos(from.line, 0));
-        var lead = options.blockCommentLead || mode.blockCommentLead;
-        if (lead != null) for (var i = from.line + 1; i <= end; ++i)
-          if (i != end || lastLineHasText)
-            self.replaceRange(lead + pad, Pos(i, 0));
-      } else {
-        self.replaceRange(endString, to);
-        self.replaceRange(startString, from);
-      }
-    });
-  });
-
-  CodeMirror.defineExtension("uncomment", function(from, to, options) {
-    if (!options) options = noOptions;
-    var self = this, mode = getMode(self, from);
-    var end = Math.min(to.ch != 0 || to.line == from.line ? to.line : to.line - 1, self.lastLine()), start = Math.min(from.line, end);
-
-    // Try finding line comments
-    var lineString = options.lineComment || mode.lineComment, lines = [];
-    var pad = options.padding == null ? " " : options.padding, didSomething;
-    lineComment: {
-      if (!lineString) break lineComment;
-      for (var i = start; i <= end; ++i) {
-        var line = self.getLine(i);
-        var found = line.indexOf(lineString);
-        if (found > -1 && !/comment/.test(self.getTokenTypeAt(Pos(i, found + 1)))) found = -1;
-        if (found == -1 && nonWS.test(line)) break lineComment;
-        if (found > -1 && nonWS.test(line.slice(0, found))) break lineComment;
-        lines.push(line);
-      }
-      self.operation(function() {
-        for (var i = start; i <= end; ++i) {
-          var line = lines[i - start];
-          var pos = line.indexOf(lineString), endPos = pos + lineString.length;
-          if (pos < 0) continue;
-          if (line.slice(endPos, endPos + pad.length) == pad) endPos += pad.length;
-          didSomething = true;
-          self.replaceRange("", Pos(i, pos), Pos(i, endPos));
-        }
-      });
-      if (didSomething) return true;
-    }
-
-    // Try block comments
-    var startString = options.blockCommentStart || mode.blockCommentStart;
-    var endString = options.blockCommentEnd || mode.blockCommentEnd;
-    if (!startString || !endString) return false;
-    var lead = options.blockCommentLead || mode.blockCommentLead;
-    var startLine = self.getLine(start), open = startLine.indexOf(startString)
-    if (open == -1) return false
-    var endLine = end == start ? startLine : self.getLine(end)
-    var close = endLine.indexOf(endString, end == start ? open + startString.length : 0);
-    var insideStart = Pos(start, open + 1), insideEnd = Pos(end, close + 1)
-    if (close == -1 ||
-        !/comment/.test(self.getTokenTypeAt(insideStart)) ||
-        !/comment/.test(self.getTokenTypeAt(insideEnd)) ||
-        self.getRange(insideStart, insideEnd, "\n").indexOf(endString) > -1)
-      return false;
-
-    // Avoid killing block comments completely outside the selection.
-    // Positions of the last startString before the start of the selection, and the first endString after it.
-    var lastStart = startLine.lastIndexOf(startString, from.ch);
-    var firstEnd = lastStart == -1 ? -1 : startLine.slice(0, from.ch).indexOf(endString, lastStart + startString.length);
-    if (lastStart != -1 && firstEnd != -1 && firstEnd + endString.length != from.ch) return false;
-    // Positions of the first endString after the end of the selection, and the last startString before it.
-    firstEnd = endLine.indexOf(endString, to.ch);
-    var almostLastStart = endLine.slice(to.ch).lastIndexOf(startString, firstEnd - to.ch);
-    lastStart = (firstEnd == -1 || almostLastStart == -1) ? -1 : to.ch + almostLastStart;
-    if (firstEnd != -1 && lastStart != -1 && lastStart != to.ch) return false;
-
-    self.operation(function() {
-      self.replaceRange("", Pos(end, close - (pad && endLine.slice(close - pad.length, close) == pad ? pad.length : 0)),
-                        Pos(end, close + endString.length));
-      var openEnd = open + startString.length;
-      if (pad && startLine.slice(openEnd, openEnd + pad.length) == pad) openEnd += pad.length;
-      self.replaceRange("", Pos(start, open), Pos(start, openEnd));
-      if (lead) for (var i = start + 1; i <= end; ++i) {
-        var line = self.getLine(i), found = line.indexOf(lead);
-        if (found == -1 || nonWS.test(line.slice(0, found))) continue;
-        var foundEnd = found + lead.length;
-        if (pad && line.slice(foundEnd, foundEnd + pad.length) == pad) foundEnd += pad.length;
-        self.replaceRange("", Pos(i, found), Pos(i, foundEnd));
-      }
-    });
-    return true;
-  });
 });
 
 
@@ -12263,6 +11298,13 @@ module.exports = [
   'valueOf'
 ];
 
+
+/***/ }),
+
+/***/ "783e":
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
 
 /***/ }),
 
@@ -13242,13 +12284,6 @@ module.exports = typeof WeakMap === 'function' && /native code/.test(inspectSour
 
 /***/ }),
 
-/***/ "8057":
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-
-/***/ }),
-
 /***/ "825a":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13382,13 +12417,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 /***/ }),
 
-/***/ "88c6":
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-
-/***/ }),
-
 /***/ "8925":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13405,13 +12433,6 @@ if (typeof store.inspectSource != 'function') {
 
 module.exports = store.inspectSource;
 
-
-/***/ }),
-
-/***/ "8a8c":
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
 
 /***/ }),
 
@@ -13435,230 +12456,6 @@ module.exports = function (S, index, unicode) {
 /***/ (function(module, exports) {
 
 module.exports = __WEBPACK_EXTERNAL_MODULE__8bbf__;
-
-/***/ }),
-
-/***/ "8c33":
-/***/ (function(module, exports, __webpack_require__) {
-
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
-
-(function(mod) {
-  if (true) // CommonJS
-    mod(__webpack_require__("56b3"));
-  else {}
-})(function(CodeMirror) {
-  var ie_lt8 = /MSIE \d/.test(navigator.userAgent) &&
-    (document.documentMode == null || document.documentMode < 8);
-
-  var Pos = CodeMirror.Pos;
-
-  var matching = {"(": ")>", ")": "(<", "[": "]>", "]": "[<", "{": "}>", "}": "{<", "<": ">>", ">": "<<"};
-
-  function bracketRegex(config) {
-    return config && config.bracketRegex || /[(){}[\]]/
-  }
-
-  function findMatchingBracket(cm, where, config) {
-    var line = cm.getLineHandle(where.line), pos = where.ch - 1;
-    var afterCursor = config && config.afterCursor
-    if (afterCursor == null)
-      afterCursor = /(^| )cm-fat-cursor($| )/.test(cm.getWrapperElement().className)
-    var re = bracketRegex(config)
-
-    // A cursor is defined as between two characters, but in in vim command mode
-    // (i.e. not insert mode), the cursor is visually represented as a
-    // highlighted box on top of the 2nd character. Otherwise, we allow matches
-    // from before or after the cursor.
-    var match = (!afterCursor && pos >= 0 && re.test(line.text.charAt(pos)) && matching[line.text.charAt(pos)]) ||
-        re.test(line.text.charAt(pos + 1)) && matching[line.text.charAt(++pos)];
-    if (!match) return null;
-    var dir = match.charAt(1) == ">" ? 1 : -1;
-    if (config && config.strict && (dir > 0) != (pos == where.ch)) return null;
-    var style = cm.getTokenTypeAt(Pos(where.line, pos + 1));
-
-    var found = scanForBracket(cm, Pos(where.line, pos + (dir > 0 ? 1 : 0)), dir, style || null, config);
-    if (found == null) return null;
-    return {from: Pos(where.line, pos), to: found && found.pos,
-            match: found && found.ch == match.charAt(0), forward: dir > 0};
-  }
-
-  // bracketRegex is used to specify which type of bracket to scan
-  // should be a regexp, e.g. /[[\]]/
-  //
-  // Note: If "where" is on an open bracket, then this bracket is ignored.
-  //
-  // Returns false when no bracket was found, null when it reached
-  // maxScanLines and gave up
-  function scanForBracket(cm, where, dir, style, config) {
-    var maxScanLen = (config && config.maxScanLineLength) || 10000;
-    var maxScanLines = (config && config.maxScanLines) || 1000;
-
-    var stack = [];
-    var re = bracketRegex(config)
-    var lineEnd = dir > 0 ? Math.min(where.line + maxScanLines, cm.lastLine() + 1)
-                          : Math.max(cm.firstLine() - 1, where.line - maxScanLines);
-    for (var lineNo = where.line; lineNo != lineEnd; lineNo += dir) {
-      var line = cm.getLine(lineNo);
-      if (!line) continue;
-      var pos = dir > 0 ? 0 : line.length - 1, end = dir > 0 ? line.length : -1;
-      if (line.length > maxScanLen) continue;
-      if (lineNo == where.line) pos = where.ch - (dir < 0 ? 1 : 0);
-      for (; pos != end; pos += dir) {
-        var ch = line.charAt(pos);
-        if (re.test(ch) && (style === undefined || cm.getTokenTypeAt(Pos(lineNo, pos + 1)) == style)) {
-          var match = matching[ch];
-          if (match && (match.charAt(1) == ">") == (dir > 0)) stack.push(ch);
-          else if (!stack.length) return {pos: Pos(lineNo, pos), ch: ch};
-          else stack.pop();
-        }
-      }
-    }
-    return lineNo - dir == (dir > 0 ? cm.lastLine() : cm.firstLine()) ? false : null;
-  }
-
-  function matchBrackets(cm, autoclear, config) {
-    // Disable brace matching in long lines, since it'll cause hugely slow updates
-    var maxHighlightLen = cm.state.matchBrackets.maxHighlightLineLength || 1000;
-    var marks = [], ranges = cm.listSelections();
-    for (var i = 0; i < ranges.length; i++) {
-      var match = ranges[i].empty() && findMatchingBracket(cm, ranges[i].head, config);
-      if (match && cm.getLine(match.from.line).length <= maxHighlightLen) {
-        var style = match.match ? "CodeMirror-matchingbracket" : "CodeMirror-nonmatchingbracket";
-        marks.push(cm.markText(match.from, Pos(match.from.line, match.from.ch + 1), {className: style}));
-        if (match.to && cm.getLine(match.to.line).length <= maxHighlightLen)
-          marks.push(cm.markText(match.to, Pos(match.to.line, match.to.ch + 1), {className: style}));
-      }
-    }
-
-    if (marks.length) {
-      // Kludge to work around the IE bug from issue #1193, where text
-      // input stops going to the textare whever this fires.
-      if (ie_lt8 && cm.state.focused) cm.focus();
-
-      var clear = function() {
-        cm.operation(function() {
-          for (var i = 0; i < marks.length; i++) marks[i].clear();
-        });
-      };
-      if (autoclear) setTimeout(clear, 800);
-      else return clear;
-    }
-  }
-
-  function doMatchBrackets(cm) {
-    cm.operation(function() {
-      if (cm.state.matchBrackets.currentlyHighlighted) {
-        cm.state.matchBrackets.currentlyHighlighted();
-        cm.state.matchBrackets.currentlyHighlighted = null;
-      }
-      cm.state.matchBrackets.currentlyHighlighted = matchBrackets(cm, false, cm.state.matchBrackets);
-    });
-  }
-
-  CodeMirror.defineOption("matchBrackets", false, function(cm, val, old) {
-    if (old && old != CodeMirror.Init) {
-      cm.off("cursorActivity", doMatchBrackets);
-      if (cm.state.matchBrackets && cm.state.matchBrackets.currentlyHighlighted) {
-        cm.state.matchBrackets.currentlyHighlighted();
-        cm.state.matchBrackets.currentlyHighlighted = null;
-      }
-    }
-    if (val) {
-      cm.state.matchBrackets = typeof val == "object" ? val : {};
-      cm.on("cursorActivity", doMatchBrackets);
-    }
-  });
-
-  CodeMirror.defineExtension("matchBrackets", function() {matchBrackets(this, true);});
-  CodeMirror.defineExtension("findMatchingBracket", function(pos, config, oldConfig){
-    // Backwards-compatibility kludge
-    if (oldConfig || typeof config == "boolean") {
-      if (!oldConfig) {
-        config = config ? {strict: true} : null
-      } else {
-        oldConfig.strict = config
-        config = oldConfig
-      }
-    }
-    return findMatchingBracket(this, pos, config)
-  });
-  CodeMirror.defineExtension("scanForBracket", function(pos, dir, style, config){
-    return scanForBracket(this, pos, dir, style, config);
-  });
-});
-
-
-/***/ }),
-
-/***/ "8f0a":
-/***/ (function(module, exports, __webpack_require__) {
-
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
-
-(function(mod) {
-  if (true) // CommonJS
-    mod(__webpack_require__("56b3"), __webpack_require__("a2c1"));
-  else {}
-})(function(CodeMirror) {
-  "use strict";
-
-  CodeMirror.defineOption("matchTags", false, function(cm, val, old) {
-    if (old && old != CodeMirror.Init) {
-      cm.off("cursorActivity", doMatchTags);
-      cm.off("viewportChange", maybeUpdateMatch);
-      clear(cm);
-    }
-    if (val) {
-      cm.state.matchBothTags = typeof val == "object" && val.bothTags;
-      cm.on("cursorActivity", doMatchTags);
-      cm.on("viewportChange", maybeUpdateMatch);
-      doMatchTags(cm);
-    }
-  });
-
-  function clear(cm) {
-    if (cm.state.tagHit) cm.state.tagHit.clear();
-    if (cm.state.tagOther) cm.state.tagOther.clear();
-    cm.state.tagHit = cm.state.tagOther = null;
-  }
-
-  function doMatchTags(cm) {
-    cm.state.failedTagMatch = false;
-    cm.operation(function() {
-      clear(cm);
-      if (cm.somethingSelected()) return;
-      var cur = cm.getCursor(), range = cm.getViewport();
-      range.from = Math.min(range.from, cur.line); range.to = Math.max(cur.line + 1, range.to);
-      var match = CodeMirror.findMatchingTag(cm, cur, range);
-      if (!match) return;
-      if (cm.state.matchBothTags) {
-        var hit = match.at == "open" ? match.open : match.close;
-        if (hit) cm.state.tagHit = cm.markText(hit.from, hit.to, {className: "CodeMirror-matchingtag"});
-      }
-      var other = match.at == "close" ? match.open : match.close;
-      if (other)
-        cm.state.tagOther = cm.markText(other.from, other.to, {className: "CodeMirror-matchingtag"});
-      else
-        cm.state.failedTagMatch = true;
-    });
-  }
-
-  function maybeUpdateMatch(cm) {
-    if (cm.state.failedTagMatch) doMatchTags(cm);
-  }
-
-  CodeMirror.commands.toMatchingTag = function(cm) {
-    var found = CodeMirror.findMatchingTag(cm, cm.getCursor());
-    if (found) {
-      var other = found.at == "close" ? found.open : found.close;
-      if (other) cm.extendSelection(other.to, other.from);
-    }
-  };
-});
-
 
 /***/ }),
 
@@ -13787,13 +12584,6 @@ module.exports = patchedExec;
 
 /***/ }),
 
-/***/ "93b1":
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-
-/***/ }),
-
 /***/ "94ca":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13819,17 +12609,6 @@ var POLYFILL = isForced.POLYFILL = 'P';
 
 module.exports = isForced;
 
-
-/***/ }),
-
-/***/ "94d3":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Editor_vue_vue_type_style_index_2_lang_stylus___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("bb85");
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Editor_vue_vue_type_style_index_2_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Editor_vue_vue_type_style_index_2_lang_stylus___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Editor_vue_vue_type_style_index_2_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
@@ -14637,6 +13416,17 @@ $({ target: 'Array', proto: true, forced: FORCED }, {
 
 /***/ }),
 
+/***/ "9a34":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OutputPan_vue_vue_type_style_index_0_id_058f51e0_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("a420");
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OutputPan_vue_vue_type_style_index_0_id_058f51e0_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OutputPan_vue_vue_type_style_index_0_id_058f51e0_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OutputPan_vue_vue_type_style_index_0_id_058f51e0_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
 /***/ "9bdd":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14684,59 +13474,6 @@ exports.f = DESCRIPTORS ? nativeDefineProperty : function defineProperty(O, P, A
 
 /***/ }),
 
-/***/ "9f09":
-/***/ (function(module, exports, __webpack_require__) {
-
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
-
-(function(mod) {
-  if (true) // CommonJS
-    mod(__webpack_require__("56b3"));
-  else {}
-})(function(CodeMirror) {
-"use strict";
-
-CodeMirror.registerHelper("fold", "markdown", function(cm, start) {
-  var maxDepth = 100;
-
-  function isHeader(lineNo) {
-    var tokentype = cm.getTokenTypeAt(CodeMirror.Pos(lineNo, 0));
-    return tokentype && /\bheader\b/.test(tokentype);
-  }
-
-  function headerLevel(lineNo, line, nextLine) {
-    var match = line && line.match(/^#+/);
-    if (match && isHeader(lineNo)) return match[0].length;
-    match = nextLine && nextLine.match(/^[=\-]+\s*$/);
-    if (match && isHeader(lineNo + 1)) return nextLine[0] == "=" ? 1 : 2;
-    return maxDepth;
-  }
-
-  var firstLine = cm.getLine(start.line), nextLine = cm.getLine(start.line + 1);
-  var level = headerLevel(start.line, firstLine, nextLine);
-  if (level === maxDepth) return undefined;
-
-  var lastLineNo = cm.lastLine();
-  var end = start.line, nextNextLine = cm.getLine(end + 2);
-  while (end < lastLineNo) {
-    if (headerLevel(end + 1, nextLine, nextNextLine) <= level) break;
-    ++end;
-    nextLine = nextNextLine;
-    nextNextLine = cm.getLine(end + 2);
-  }
-
-  return {
-    from: CodeMirror.Pos(start.line, firstLine.length),
-    to: CodeMirror.Pos(end, cm.getLine(end).length)
-  };
-});
-
-});
-
-
-/***/ }),
-
 /***/ "9f7f":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14765,17 +13502,6 @@ exports.BROKEN_CARET = fails(function () {
   return re.exec('str') != null;
 });
 
-
-/***/ }),
-
-/***/ "9fea":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Editor_vue_vue_type_style_index_3_id_4ca99cde_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("8057");
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Editor_vue_vue_type_style_index_3_id_4ca99cde_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Editor_vue_vue_type_style_index_3_id_4ca99cde_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Editor_vue_vue_type_style_index_3_id_4ca99cde_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
@@ -14957,191 +13683,10 @@ $({ target: 'Array', proto: true, forced: ES3_STRINGS || !STRICT_METHOD }, {
 
 /***/ }),
 
-/***/ "a2c1":
+/***/ "a420":
 /***/ (function(module, exports, __webpack_require__) {
 
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
-
-(function(mod) {
-  if (true) // CommonJS
-    mod(__webpack_require__("56b3"));
-  else {}
-})(function(CodeMirror) {
-  "use strict";
-
-  var Pos = CodeMirror.Pos;
-  function cmp(a, b) { return a.line - b.line || a.ch - b.ch; }
-
-  var nameStartChar = "A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD";
-  var nameChar = nameStartChar + "\-\:\.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040";
-  var xmlTagStart = new RegExp("<(/?)([" + nameStartChar + "][" + nameChar + "]*)", "g");
-
-  function Iter(cm, line, ch, range) {
-    this.line = line; this.ch = ch;
-    this.cm = cm; this.text = cm.getLine(line);
-    this.min = range ? Math.max(range.from, cm.firstLine()) : cm.firstLine();
-    this.max = range ? Math.min(range.to - 1, cm.lastLine()) : cm.lastLine();
-  }
-
-  function tagAt(iter, ch) {
-    var type = iter.cm.getTokenTypeAt(Pos(iter.line, ch));
-    return type && /\btag\b/.test(type);
-  }
-
-  function nextLine(iter) {
-    if (iter.line >= iter.max) return;
-    iter.ch = 0;
-    iter.text = iter.cm.getLine(++iter.line);
-    return true;
-  }
-  function prevLine(iter) {
-    if (iter.line <= iter.min) return;
-    iter.text = iter.cm.getLine(--iter.line);
-    iter.ch = iter.text.length;
-    return true;
-  }
-
-  function toTagEnd(iter) {
-    for (;;) {
-      var gt = iter.text.indexOf(">", iter.ch);
-      if (gt == -1) { if (nextLine(iter)) continue; else return; }
-      if (!tagAt(iter, gt + 1)) { iter.ch = gt + 1; continue; }
-      var lastSlash = iter.text.lastIndexOf("/", gt);
-      var selfClose = lastSlash > -1 && !/\S/.test(iter.text.slice(lastSlash + 1, gt));
-      iter.ch = gt + 1;
-      return selfClose ? "selfClose" : "regular";
-    }
-  }
-  function toTagStart(iter) {
-    for (;;) {
-      var lt = iter.ch ? iter.text.lastIndexOf("<", iter.ch - 1) : -1;
-      if (lt == -1) { if (prevLine(iter)) continue; else return; }
-      if (!tagAt(iter, lt + 1)) { iter.ch = lt; continue; }
-      xmlTagStart.lastIndex = lt;
-      iter.ch = lt;
-      var match = xmlTagStart.exec(iter.text);
-      if (match && match.index == lt) return match;
-    }
-  }
-
-  function toNextTag(iter) {
-    for (;;) {
-      xmlTagStart.lastIndex = iter.ch;
-      var found = xmlTagStart.exec(iter.text);
-      if (!found) { if (nextLine(iter)) continue; else return; }
-      if (!tagAt(iter, found.index + 1)) { iter.ch = found.index + 1; continue; }
-      iter.ch = found.index + found[0].length;
-      return found;
-    }
-  }
-  function toPrevTag(iter) {
-    for (;;) {
-      var gt = iter.ch ? iter.text.lastIndexOf(">", iter.ch - 1) : -1;
-      if (gt == -1) { if (prevLine(iter)) continue; else return; }
-      if (!tagAt(iter, gt + 1)) { iter.ch = gt; continue; }
-      var lastSlash = iter.text.lastIndexOf("/", gt);
-      var selfClose = lastSlash > -1 && !/\S/.test(iter.text.slice(lastSlash + 1, gt));
-      iter.ch = gt + 1;
-      return selfClose ? "selfClose" : "regular";
-    }
-  }
-
-  function findMatchingClose(iter, tag) {
-    var stack = [];
-    for (;;) {
-      var next = toNextTag(iter), end, startLine = iter.line, startCh = iter.ch - (next ? next[0].length : 0);
-      if (!next || !(end = toTagEnd(iter))) return;
-      if (end == "selfClose") continue;
-      if (next[1]) { // closing tag
-        for (var i = stack.length - 1; i >= 0; --i) if (stack[i] == next[2]) {
-          stack.length = i;
-          break;
-        }
-        if (i < 0 && (!tag || tag == next[2])) return {
-          tag: next[2],
-          from: Pos(startLine, startCh),
-          to: Pos(iter.line, iter.ch)
-        };
-      } else { // opening tag
-        stack.push(next[2]);
-      }
-    }
-  }
-  function findMatchingOpen(iter, tag) {
-    var stack = [];
-    for (;;) {
-      var prev = toPrevTag(iter);
-      if (!prev) return;
-      if (prev == "selfClose") { toTagStart(iter); continue; }
-      var endLine = iter.line, endCh = iter.ch;
-      var start = toTagStart(iter);
-      if (!start) return;
-      if (start[1]) { // closing tag
-        stack.push(start[2]);
-      } else { // opening tag
-        for (var i = stack.length - 1; i >= 0; --i) if (stack[i] == start[2]) {
-          stack.length = i;
-          break;
-        }
-        if (i < 0 && (!tag || tag == start[2])) return {
-          tag: start[2],
-          from: Pos(iter.line, iter.ch),
-          to: Pos(endLine, endCh)
-        };
-      }
-    }
-  }
-
-  CodeMirror.registerHelper("fold", "xml", function(cm, start) {
-    var iter = new Iter(cm, start.line, 0);
-    for (;;) {
-      var openTag = toNextTag(iter)
-      if (!openTag || iter.line != start.line) return
-      var end = toTagEnd(iter)
-      if (!end) return
-      if (!openTag[1] && end != "selfClose") {
-        var startPos = Pos(iter.line, iter.ch);
-        var endPos = findMatchingClose(iter, openTag[2]);
-        return endPos && cmp(endPos.from, startPos) > 0 ? {from: startPos, to: endPos.from} : null
-      }
-    }
-  });
-  CodeMirror.findMatchingTag = function(cm, pos, range) {
-    var iter = new Iter(cm, pos.line, pos.ch, range);
-    if (iter.text.indexOf(">") == -1 && iter.text.indexOf("<") == -1) return;
-    var end = toTagEnd(iter), to = end && Pos(iter.line, iter.ch);
-    var start = end && toTagStart(iter);
-    if (!end || !start || cmp(iter, pos) > 0) return;
-    var here = {from: Pos(iter.line, iter.ch), to: to, tag: start[2]};
-    if (end == "selfClose") return {open: here, close: null, at: "open"};
-
-    if (start[1]) { // closing tag
-      return {open: findMatchingOpen(iter, start[2]), close: here, at: "close"};
-    } else { // opening tag
-      iter = new Iter(cm, to.line, to.ch, range);
-      return {open: here, close: findMatchingClose(iter, start[2]), at: "open"};
-    }
-  };
-
-  CodeMirror.findEnclosingTag = function(cm, pos, range, tag) {
-    var iter = new Iter(cm, pos.line, pos.ch, range);
-    for (;;) {
-      var open = findMatchingOpen(iter, tag);
-      if (!open) break;
-      var forward = new Iter(cm, pos.line, pos.ch, range);
-      var close = findMatchingClose(forward, open.tag);
-      if (close) return {open: open, close: close};
-    }
-  };
-
-  // Used by addon/edit/closetag.js
-  CodeMirror.scanForClosingTag = function(cm, pos, name, end) {
-    var iter = new Iter(cm, pos.line, pos.ch, end ? {from: 0, to: end} : null);
-    return findMatchingClose(iter, name);
-  };
-});
-
+// extracted by mini-css-extract-plugin
 
 /***/ }),
 
@@ -15575,10 +14120,14 @@ module.exports = function (argument) {
 
 /***/ }),
 
-/***/ "aa08":
-/***/ (function(module, exports, __webpack_require__) {
+/***/ "a9e3":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-// extracted by mini-css-extract-plugin
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PanResizer_vue_vue_type_style_index_0_id_83547212_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("1298");
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PanResizer_vue_vue_type_style_index_0_id_83547212_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PanResizer_vue_vue_type_style_index_0_id_83547212_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PanResizer_vue_vue_type_style_index_0_id_83547212_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
@@ -15655,112 +14204,10 @@ module.exports = function (METHOD_NAME, options) {
 
 /***/ }),
 
-/***/ "aedd":
+/***/ "af6d":
 /***/ (function(module, exports, __webpack_require__) {
 
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
-
-(function(mod) {
-  if (true) // CommonJS
-    mod(__webpack_require__("56b3"));
-  else {}
-})(function(CodeMirror) {
-"use strict";
-
-CodeMirror.registerHelper("fold", "brace", function(cm, start) {
-  var line = start.line, lineText = cm.getLine(line);
-  var tokenType;
-
-  function findOpening(openCh) {
-    for (var at = start.ch, pass = 0;;) {
-      var found = at <= 0 ? -1 : lineText.lastIndexOf(openCh, at - 1);
-      if (found == -1) {
-        if (pass == 1) break;
-        pass = 1;
-        at = lineText.length;
-        continue;
-      }
-      if (pass == 1 && found < start.ch) break;
-      tokenType = cm.getTokenTypeAt(CodeMirror.Pos(line, found + 1));
-      if (!/^(comment|string)/.test(tokenType)) return found + 1;
-      at = found - 1;
-    }
-  }
-
-  var startToken = "{", endToken = "}", startCh = findOpening("{");
-  if (startCh == null) {
-    startToken = "[", endToken = "]";
-    startCh = findOpening("[");
-  }
-
-  if (startCh == null) return;
-  var count = 1, lastLine = cm.lastLine(), end, endCh;
-  outer: for (var i = line; i <= lastLine; ++i) {
-    var text = cm.getLine(i), pos = i == line ? startCh : 0;
-    for (;;) {
-      var nextOpen = text.indexOf(startToken, pos), nextClose = text.indexOf(endToken, pos);
-      if (nextOpen < 0) nextOpen = text.length;
-      if (nextClose < 0) nextClose = text.length;
-      pos = Math.min(nextOpen, nextClose);
-      if (pos == text.length) break;
-      if (cm.getTokenTypeAt(CodeMirror.Pos(i, pos + 1)) == tokenType) {
-        if (pos == nextOpen) ++count;
-        else if (!--count) { end = i; endCh = pos; break outer; }
-      }
-      ++pos;
-    }
-  }
-  if (end == null || line == end) return;
-  return {from: CodeMirror.Pos(line, startCh),
-          to: CodeMirror.Pos(end, endCh)};
-});
-
-CodeMirror.registerHelper("fold", "import", function(cm, start) {
-  function hasImport(line) {
-    if (line < cm.firstLine() || line > cm.lastLine()) return null;
-    var start = cm.getTokenAt(CodeMirror.Pos(line, 1));
-    if (!/\S/.test(start.string)) start = cm.getTokenAt(CodeMirror.Pos(line, start.end + 1));
-    if (start.type != "keyword" || start.string != "import") return null;
-    // Now find closing semicolon, return its position
-    for (var i = line, e = Math.min(cm.lastLine(), line + 10); i <= e; ++i) {
-      var text = cm.getLine(i), semi = text.indexOf(";");
-      if (semi != -1) return {startCh: start.end, end: CodeMirror.Pos(i, semi)};
-    }
-  }
-
-  var startLine = start.line, has = hasImport(startLine), prev;
-  if (!has || hasImport(startLine - 1) || ((prev = hasImport(startLine - 2)) && prev.end.line == startLine - 1))
-    return null;
-  for (var end = has.end;;) {
-    var next = hasImport(end.line + 1);
-    if (next == null) break;
-    end = next.end;
-  }
-  return {from: cm.clipPos(CodeMirror.Pos(startLine, has.startCh + 1)), to: end};
-});
-
-CodeMirror.registerHelper("fold", "include", function(cm, start) {
-  function hasInclude(line) {
-    if (line < cm.firstLine() || line > cm.lastLine()) return null;
-    var start = cm.getTokenAt(CodeMirror.Pos(line, 1));
-    if (!/\S/.test(start.string)) start = cm.getTokenAt(CodeMirror.Pos(line, start.end + 1));
-    if (start.type == "meta" && start.string.slice(0, 8) == "#include") return start.start + 8;
-  }
-
-  var startLine = start.line, has = hasInclude(startLine);
-  if (has == null || hasInclude(startLine - 1) != null) return null;
-  for (var end = startLine;;) {
-    var next = hasInclude(end + 1);
-    if (next == null) break;
-    ++end;
-  }
-  return {from: CodeMirror.Pos(startLine, has + 1),
-          to: cm.clipPos(CodeMirror.Pos(end))};
-});
-
-});
-
+// extracted by mini-css-extract-plugin
 
 /***/ }),
 
@@ -16089,10 +14536,14 @@ module.exports = {
 
 /***/ }),
 
-/***/ "bb85":
-/***/ (function(module, exports, __webpack_require__) {
+/***/ "bb96":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-// extracted by mini-css-extract-plugin
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Header_vue_vue_type_style_index_0_id_d923edf0_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("783e");
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Header_vue_vue_type_style_index_0_id_d923edf0_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Header_vue_vue_type_style_index_0_id_d923edf0_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Header_vue_vue_type_style_index_0_id_d923edf0_lang_stylus_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
@@ -16114,17 +14565,6 @@ module.exports = function (input, PREFERRED_STRING) {
   throw TypeError("Can't convert object to primitive value");
 };
 
-
-/***/ }),
-
-/***/ "c07f":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_css_loader_dist_cjs_js_ref_6_oneOf_1_1_vue_loader_lib_loaders_stylePostLoader_js_postcss_loader_src_index_js_ref_6_oneOf_1_2_foldgutter_css_vue_type_style_index_1_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("88c6");
-/* harmony import */ var _mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_css_loader_dist_cjs_js_ref_6_oneOf_1_1_vue_loader_lib_loaders_stylePostLoader_js_postcss_loader_src_index_js_ref_6_oneOf_1_2_foldgutter_css_vue_type_style_index_1_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_css_loader_dist_cjs_js_ref_6_oneOf_1_1_vue_loader_lib_loaders_stylePostLoader_js_postcss_loader_src_index_js_ref_6_oneOf_1_2_foldgutter_css_vue_type_style_index_1_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_css_loader_dist_cjs_js_ref_6_oneOf_1_1_vue_loader_lib_loaders_stylePostLoader_js_postcss_loader_src_index_js_ref_6_oneOf_1_2_foldgutter_css_vue_type_style_index_1_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
@@ -16243,173 +14683,6 @@ module.exports = function (object, names) {
 
 /***/ }),
 
-/***/ "cbc8":
-/***/ (function(module, exports, __webpack_require__) {
-
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
-
-(function(mod) {
-  if (true) // CommonJS
-    mod(__webpack_require__("56b3"), __webpack_require__("4895"));
-  else {}
-})(function(CodeMirror) {
-  "use strict";
-
-  CodeMirror.defineOption("foldGutter", false, function(cm, val, old) {
-    if (old && old != CodeMirror.Init) {
-      cm.clearGutter(cm.state.foldGutter.options.gutter);
-      cm.state.foldGutter = null;
-      cm.off("gutterClick", onGutterClick);
-      cm.off("changes", onChange);
-      cm.off("viewportChange", onViewportChange);
-      cm.off("fold", onFold);
-      cm.off("unfold", onFold);
-      cm.off("swapDoc", onChange);
-    }
-    if (val) {
-      cm.state.foldGutter = new State(parseOptions(val));
-      updateInViewport(cm);
-      cm.on("gutterClick", onGutterClick);
-      cm.on("changes", onChange);
-      cm.on("viewportChange", onViewportChange);
-      cm.on("fold", onFold);
-      cm.on("unfold", onFold);
-      cm.on("swapDoc", onChange);
-    }
-  });
-
-  var Pos = CodeMirror.Pos;
-
-  function State(options) {
-    this.options = options;
-    this.from = this.to = 0;
-  }
-
-  function parseOptions(opts) {
-    if (opts === true) opts = {};
-    if (opts.gutter == null) opts.gutter = "CodeMirror-foldgutter";
-    if (opts.indicatorOpen == null) opts.indicatorOpen = "CodeMirror-foldgutter-open";
-    if (opts.indicatorFolded == null) opts.indicatorFolded = "CodeMirror-foldgutter-folded";
-    return opts;
-  }
-
-  function isFolded(cm, line) {
-    var marks = cm.findMarks(Pos(line, 0), Pos(line + 1, 0));
-    for (var i = 0; i < marks.length; ++i) {
-      if (marks[i].__isFold) {
-        var fromPos = marks[i].find(-1);
-        if (fromPos && fromPos.line === line)
-          return marks[i];
-      }
-    }
-  }
-
-  function marker(spec) {
-    if (typeof spec == "string") {
-      var elt = document.createElement("div");
-      elt.className = spec + " CodeMirror-guttermarker-subtle";
-      return elt;
-    } else {
-      return spec.cloneNode(true);
-    }
-  }
-
-  function updateFoldInfo(cm, from, to) {
-    var opts = cm.state.foldGutter.options, cur = from - 1;
-    var minSize = cm.foldOption(opts, "minFoldSize");
-    var func = cm.foldOption(opts, "rangeFinder");
-    // we can reuse the built-in indicator element if its className matches the new state
-    var clsFolded = typeof opts.indicatorFolded == "string" && classTest(opts.indicatorFolded);
-    var clsOpen = typeof opts.indicatorOpen == "string" && classTest(opts.indicatorOpen);
-    cm.eachLine(from, to, function(line) {
-      ++cur;
-      var mark = null;
-      var old = line.gutterMarkers;
-      if (old) old = old[opts.gutter];
-      if (isFolded(cm, cur)) {
-        if (clsFolded && old && clsFolded.test(old.className)) return;
-        mark = marker(opts.indicatorFolded);
-      } else {
-        var pos = Pos(cur, 0);
-        var range = func && func(cm, pos);
-        if (range && range.to.line - range.from.line >= minSize) {
-          if (clsOpen && old && clsOpen.test(old.className)) return;
-          mark = marker(opts.indicatorOpen);
-        }
-      }
-      if (!mark && !old) return;
-      cm.setGutterMarker(line, opts.gutter, mark);
-    });
-  }
-
-  // copied from CodeMirror/src/util/dom.js
-  function classTest(cls) { return new RegExp("(^|\\s)" + cls + "(?:$|\\s)\\s*") }
-
-  function updateInViewport(cm) {
-    var vp = cm.getViewport(), state = cm.state.foldGutter;
-    if (!state) return;
-    cm.operation(function() {
-      updateFoldInfo(cm, vp.from, vp.to);
-    });
-    state.from = vp.from; state.to = vp.to;
-  }
-
-  function onGutterClick(cm, line, gutter) {
-    var state = cm.state.foldGutter;
-    if (!state) return;
-    var opts = state.options;
-    if (gutter != opts.gutter) return;
-    var folded = isFolded(cm, line);
-    if (folded) folded.clear();
-    else cm.foldCode(Pos(line, 0), opts);
-  }
-
-  function onChange(cm) {
-    var state = cm.state.foldGutter;
-    if (!state) return;
-    var opts = state.options;
-    state.from = state.to = 0;
-    clearTimeout(state.changeUpdate);
-    state.changeUpdate = setTimeout(function() { updateInViewport(cm); }, opts.foldOnChangeTimeSpan || 600);
-  }
-
-  function onViewportChange(cm) {
-    var state = cm.state.foldGutter;
-    if (!state) return;
-    var opts = state.options;
-    clearTimeout(state.changeUpdate);
-    state.changeUpdate = setTimeout(function() {
-      var vp = cm.getViewport();
-      if (state.from == state.to || vp.from - state.to > 20 || state.from - vp.to > 20) {
-        updateInViewport(cm);
-      } else {
-        cm.operation(function() {
-          if (vp.from < state.from) {
-            updateFoldInfo(cm, vp.from, state.from);
-            state.from = vp.from;
-          }
-          if (vp.to > state.to) {
-            updateFoldInfo(cm, state.to, vp.to);
-            state.to = vp.to;
-          }
-        });
-      }
-    }, opts.updateViewportTimeSpan || 400);
-  }
-
-  function onFold(cm, from) {
-    var state = cm.state.foldGutter;
-    if (!state) return;
-    var line = from.line;
-    if (line >= state.from && line < state.to)
-      updateFoldInfo(cm, line, line + 1);
-  }
-});
-
-
-/***/ }),
-
 /***/ "cc12":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16460,6 +14733,17 @@ module.exports = function (key, value) {
   } return value;
 };
 
+
+/***/ }),
+
+/***/ "cf40":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Editor_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("e424");
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Editor_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Editor_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_11_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_11_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_11_oneOf_1_2_node_modules_stylus_loader_index_js_ref_11_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Editor_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
@@ -17370,6 +15654,13 @@ module.exports = function (target, src, options) {
 
 /***/ }),
 
+/***/ "e424":
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+
+/***/ }),
+
 /***/ "e439":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17853,6 +16144,101 @@ module.exports = function (it) {
   return it !== undefined && (Iterators.Array === it || ArrayPrototype[ITERATOR] === it);
 };
 
+
+/***/ }),
+
+/***/ "ed08":
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__("99af");
+
+__webpack_require__("d81d");
+
+__webpack_require__("d3b7");
+
+__webpack_require__("e6cf");
+
+var useCache = function useCache(fn) {
+  var cache = {};
+  return function () {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return fn.apply(void 0, [cache].concat(args));
+  };
+};
+
+var loadResource = useCache(function (cache, url, handle) {
+  var callback;
+  var listener = new Promise(function (resolve) {
+    return callback = resolve;
+  });
+  var item = cache[url] || (cache[url] = {
+    state: 'init',
+    toNotify: [callback]
+  });
+
+  function notify() {
+    item.toNotify.map(function (cb) {
+      return cb();
+    });
+  }
+
+  if (item.state === 'queue') {
+    item.toNotify.push(callback);
+  }
+
+  if (item.state === 'done') {
+    callback();
+  }
+
+  if (item.state === 'init') {
+    cache[url].state = 'queue';
+
+    var cb = function cb() {
+      cache[url].state = 'done';
+      notify();
+    };
+
+    handle(cb);
+  }
+
+  return listener;
+});
+
+var loadScriptFromURL = function loadScriptFromURL(url) {
+  return loadResource(url, function (cb) {
+    var script = document.createElement('script');
+    script.src = url;
+    document.body.appendChild(script);
+
+    script.onload = function () {
+      console.log('script loaded');
+      cb();
+    };
+  });
+};
+
+var loadCSSFromURL = function loadCSSFromURL(url) {
+  return loadResource(url, function (cb) {
+    var style = document.createElement('link');
+    style.rel = 'stylesheet';
+    style.href = url;
+    document.head.appendChild(style);
+
+    style.onload = function () {
+      console.log('style loaded');
+      cb();
+    };
+  });
+};
+
+var utils = {
+  loadScriptFromURL: loadScriptFromURL,
+  loadCSSFromURL: loadCSSFromURL
+};
+module.exports = utils;
 
 /***/ }),
 
@@ -18895,27 +17281,27 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"14a844e4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Editor.vue?vue&type=template&id=4ca99cde&scoped=true&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"14a844e4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Editor.vue?vue&type=template&id=978396c2&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"editor",style:(_vm.style)},[_c('Header'),_c('div',{staticClass:"pans"},[_c('HTMLPan',{directives:[{name:"show",rawName:"v-show",value:(_vm.isVisible('html')),expression:"isVisible('html')"}],staticClass:"pan"}),_c('CSSPan',{directives:[{name:"show",rawName:"v-show",value:(_vm.isVisible('css')),expression:"isVisible('css')"}],staticClass:"pan"}),_c('JSPan',{directives:[{name:"show",rawName:"v-show",value:(_vm.isVisible('js')),expression:"isVisible('js')"}],staticClass:"pan"}),_c('ConsolePan',{directives:[{name:"show",rawName:"v-show",value:(_vm.isVisible('console')),expression:"isVisible('console')"}],staticClass:"pan"}),_c('OutputPan',{directives:[{name:"show",rawName:"v-show",value:(_vm.isVisible('output')),expression:"isVisible('output')"}],staticClass:"pan"})],1)],1)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/Editor.vue?vue&type=template&id=4ca99cde&scoped=true&
+// CONCATENATED MODULE: ./src/components/Editor.vue?vue&type=template&id=978396c2&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.index-of.js
 var es_array_index_of = __webpack_require__("c975");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"14a844e4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Header.vue?vue&type=template&id=54d4cf22&scoped=true&
-var Headervue_type_template_id_54d4cf22_scoped_true_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('header',{staticClass:"header"},[_c('div',{staticClass:"header-left header-block"}),_c('div',{staticClass:"header-middle header-block pan-toggles"},[_c('span',{staticClass:"pan-toggle",class:{visible: _vm.isVisible('html')},on:{"click":function($event){return _vm.togglePan('html')}}},[_vm._v(" HTML ")]),_c('span',{staticClass:"pan-toggle",class:{visible: _vm.isVisible('css')},on:{"click":function($event){return _vm.togglePan('css')}}},[_vm._v(" CSS ")]),_c('span',{staticClass:"pan-toggle",class:{visible: _vm.isVisible('js')},on:{"click":function($event){return _vm.togglePan('js')}}},[_vm._v(" JS ")]),_c('span',{staticClass:"pan-toggle",class:{visible: _vm.isVisible('console')},on:{"click":function($event){return _vm.togglePan('console')}}},[_vm._v(" Console ")]),_c('span',{staticClass:"pan-toggle",class:{visible: _vm.isVisible('output')},on:{"click":function($event){return _vm.togglePan('output')}}},[_vm._v(" Output ")])]),_c('div',{staticClass:"header-right header-block"},[_c('Button',{staticClass:"header-right-item",attrs:{"plain":""},on:{"click":_vm.runCode}},[_vm._v(" Run ")])],1)])}
-var Headervue_type_template_id_54d4cf22_scoped_true_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"14a844e4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Header.vue?vue&type=template&id=d923edf0&scoped=true&
+var Headervue_type_template_id_d923edf0_scoped_true_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('header',{staticClass:"header"},[_c('div',{staticClass:"header-left header-block"}),_c('div',{staticClass:"header-middle header-block pan-toggles"},[_c('span',{staticClass:"pan-toggle",class:{ visible: _vm.isVisible('html') },on:{"click":function($event){return _vm.togglePan('html')}}},[_vm._v("HTML")]),_c('span',{staticClass:"pan-toggle",class:{ visible: _vm.isVisible('css') },on:{"click":function($event){return _vm.togglePan('css')}}},[_vm._v("CSS")]),_c('span',{staticClass:"pan-toggle",class:{ visible: _vm.isVisible('js') },on:{"click":function($event){return _vm.togglePan('js')}}},[_vm._v("JS")]),_c('span',{staticClass:"pan-toggle",class:{ visible: _vm.isVisible('console') },on:{"click":function($event){return _vm.togglePan('console')}}},[_vm._v("Console")]),_c('span',{staticClass:"pan-toggle",class:{ visible: _vm.isVisible('output') },on:{"click":function($event){return _vm.togglePan('output')}}},[_vm._v("Output")])]),_c('div',{staticClass:"header-right header-block"},[_c('Button',{staticClass:"header-right-item",attrs:{"plain":""},on:{"click":_vm.runCode}},[_vm._v("Run")])],1)])}
+var Headervue_type_template_id_d923edf0_scoped_true_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/Header.vue?vue&type=template&id=54d4cf22&scoped=true&
+// CONCATENATED MODULE: ./src/components/Header.vue?vue&type=template&id=d923edf0&scoped=true&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.function.name.js
 var es_function_name = __webpack_require__("b0c0");
 
-// CONCATENATED MODULE: ./src/utils/get-parent-attrs.js
+// CONCATENATED MODULE: ./src/components/utils/get-parent-attrs.js
 
 var COMPONENT_NAME = 'Code-Block-Runner';
 function get(handle) {
@@ -18963,24 +17349,11 @@ function get(handle) {
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ var Headervue_type_script_lang_js_ = ({
   data: function data() {
     return {
-      version: Object({"NODE_ENV":"production","BASE_URL":"/"}).VERSION,
-      latestCommit: Object({"NODE_ENV":"production","BASE_URL":"/"}).LATEST_COMMIT,
-      url: window.location.href
+      url: window && window.location.href
     };
   },
   methods: {
@@ -18997,8 +17370,8 @@ function get(handle) {
 });
 // CONCATENATED MODULE: ./src/components/Header.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_Headervue_type_script_lang_js_ = (Headervue_type_script_lang_js_); 
-// EXTERNAL MODULE: ./src/components/Header.vue?vue&type=style&index=0&id=54d4cf22&lang=stylus&scoped=true&
-var Headervue_type_style_index_0_id_54d4cf22_lang_stylus_scoped_true_ = __webpack_require__("129b");
+// EXTERNAL MODULE: ./src/components/Header.vue?vue&type=style&index=0&id=d923edf0&lang=stylus&scoped=true&
+var Headervue_type_style_index_0_id_d923edf0_lang_stylus_scoped_true_ = __webpack_require__("bb96");
 
 // CONCATENATED MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
 /* globals __VUE_SSR_CONTEXT__ */
@@ -19111,22 +17484,22 @@ function normalizeComponent (
 
 var component = normalizeComponent(
   components_Headervue_type_script_lang_js_,
-  Headervue_type_template_id_54d4cf22_scoped_true_render,
-  Headervue_type_template_id_54d4cf22_scoped_true_staticRenderFns,
+  Headervue_type_template_id_d923edf0_scoped_true_render,
+  Headervue_type_template_id_d923edf0_scoped_true_staticRenderFns,
   false,
   null,
-  "54d4cf22",
+  "d923edf0",
   null
   
 )
 
 /* harmony default export */ var Header = (component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"14a844e4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/HTMLPan.vue?vue&type=template&id=3c6a2bbc&
-var HTMLPanvue_type_template_id_3c6a2bbc_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"html-pan",class:{ 'active-pan': _vm.isActivePan },style:(_vm.style),on:{"click":function($event){return _vm.setActivePan('html')}}},[_c('div',{staticClass:"pan-head"},[_vm._v(" "+_vm._s(_vm.code.name)+" ")]),_c('textarea',{ref:"editor",domProps:{"value":_vm.code.code}}),_c('PanResizer',{attrs:{"pan":"html","enable":_vm.enableResizer}})],1)}
-var HTMLPanvue_type_template_id_3c6a2bbc_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"14a844e4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/HTMLPan.vue?vue&type=template&id=6abf9f65&
+var HTMLPanvue_type_template_id_6abf9f65_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"html-pan",class:{ 'active-pan': _vm.isActivePan },style:(_vm.style),on:{"click":function($event){return _vm.setActivePan('html')}}},[_c('div',{staticClass:"pan-head"},[_vm._v(_vm._s(_vm.code.name))]),_c('textarea',{ref:"editor",domProps:{"value":_vm.code.code}}),_c('PanResizer',{attrs:{"pan":"html","enable":_vm.enableResizer}})],1)}
+var HTMLPanvue_type_template_id_6abf9f65_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/HTMLPan.vue?vue&type=template&id=3c6a2bbc&
+// CONCATENATED MODULE: ./src/components/HTMLPan.vue?vue&type=template&id=6abf9f65&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.symbol.js
 var es_symbol = __webpack_require__("a4d3");
@@ -19207,20 +17580,63 @@ function _objectSpread2(target) {
 
   return target;
 }
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"14a844e4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/PanResizer.vue?vue&type=template&id=71e85d68&scoped=true&
-var PanResizervue_type_template_id_71e85d68_scoped_true_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"resizer",staticClass:"pan-resizer",class:{ enable: _vm.enable },on:{"mousedown":_vm.handleMouseDown}})}
-var PanResizervue_type_template_id_71e85d68_scoped_true_staticRenderFns = []
+// EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
+var runtime = __webpack_require__("96cf");
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es.object.to-string.js
+var es_object_to_string = __webpack_require__("d3b7");
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es.promise.js
+var es_promise = __webpack_require__("e6cf");
+
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js
 
 
-// CONCATENATED MODULE: ./src/components/PanResizer.vue?vue&type=template&id=71e85d68&scoped=true&
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
+
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+
+      _next(undefined);
+    });
+  };
+}
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"14a844e4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/PanResizer.vue?vue&type=template&id=83547212&scoped=true&
+var PanResizervue_type_template_id_83547212_scoped_true_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"resizer",staticClass:"pan-resizer",class:{ enable: _vm.enable },on:{"mousedown":_vm.handleMouseDown}})}
+var PanResizervue_type_template_id_83547212_scoped_true_staticRenderFns = []
+
+
+// CONCATENATED MODULE: ./src/components/PanResizer.vue?vue&type=template&id=83547212&scoped=true&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/PanResizer.vue?vue&type=script&lang=js&
 
-//
-//
-//
-//
-//
 //
 //
 //
@@ -19304,8 +17720,8 @@ var PanResizervue_type_template_id_71e85d68_scoped_true_staticRenderFns = []
 });
 // CONCATENATED MODULE: ./src/components/PanResizer.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_PanResizervue_type_script_lang_js_ = (PanResizervue_type_script_lang_js_); 
-// EXTERNAL MODULE: ./src/components/PanResizer.vue?vue&type=style&index=0&id=71e85d68&lang=stylus&scoped=true&
-var PanResizervue_type_style_index_0_id_71e85d68_lang_stylus_scoped_true_ = __webpack_require__("0405");
+// EXTERNAL MODULE: ./src/components/PanResizer.vue?vue&type=style&index=0&id=83547212&lang=stylus&scoped=true&
+var PanResizervue_type_style_index_0_id_83547212_lang_stylus_scoped_true_ = __webpack_require__("a9e3");
 
 // CONCATENATED MODULE: ./src/components/PanResizer.vue
 
@@ -19318,19 +17734,16 @@ var PanResizervue_type_style_index_0_id_71e85d68_lang_stylus_scoped_true_ = __we
 
 var PanResizer_component = normalizeComponent(
   components_PanResizervue_type_script_lang_js_,
-  PanResizervue_type_template_id_71e85d68_scoped_true_render,
-  PanResizervue_type_template_id_71e85d68_scoped_true_staticRenderFns,
+  PanResizervue_type_template_id_83547212_scoped_true_render,
+  PanResizervue_type_template_id_83547212_scoped_true_staticRenderFns,
   false,
   null,
-  "71e85d68",
+  "83547212",
   null
   
 )
 
 /* harmony default export */ var PanResizer = (PanResizer_component.exports);
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.join.js
-var es_array_join = __webpack_require__("a15b");
-
 // EXTERNAL MODULE: ./node_modules/codemirror/lib/codemirror.js
 var codemirror = __webpack_require__("56b3");
 var codemirror_default = /*#__PURE__*/__webpack_require__.n(codemirror);
@@ -19344,105 +17757,33 @@ var jsx = __webpack_require__("a279");
 // EXTERNAL MODULE: ./node_modules/codemirror/mode/css/css.js
 var css = __webpack_require__("7b00");
 
-// EXTERNAL MODULE: ./node_modules/codemirror/addon/selection/active-line.js
-var active_line = __webpack_require__("31c5");
-
-// EXTERNAL MODULE: ./node_modules/codemirror/addon/edit/matchtags.js
-var matchtags = __webpack_require__("8f0a");
-
-// EXTERNAL MODULE: ./node_modules/codemirror/addon/edit/matchbrackets.js
-var matchbrackets = __webpack_require__("8c33");
-
-// EXTERNAL MODULE: ./node_modules/codemirror/addon/edit/closebrackets.js
-var closebrackets = __webpack_require__("10b2");
-
-// EXTERNAL MODULE: ./node_modules/codemirror/addon/edit/closetag.js
-var closetag = __webpack_require__("05dd");
-
-// EXTERNAL MODULE: ./node_modules/codemirror/addon/comment/comment.js
-var comment = __webpack_require__("7289");
-
-// EXTERNAL MODULE: ./node_modules/codemirror/addon/fold/foldcode.js
-var foldcode = __webpack_require__("4895");
-
-// EXTERNAL MODULE: ./node_modules/codemirror/addon/fold/foldgutter.js
-var foldgutter = __webpack_require__("cbc8");
-
-// EXTERNAL MODULE: ./node_modules/codemirror/addon/fold/brace-fold.js
-var brace_fold = __webpack_require__("aedd");
-
-// EXTERNAL MODULE: ./node_modules/codemirror/addon/fold/xml-fold.js
-var xml_fold = __webpack_require__("a2c1");
-
-// EXTERNAL MODULE: ./node_modules/codemirror/addon/fold/markdown-fold.js
-var markdown_fold = __webpack_require__("9f09");
-
-// EXTERNAL MODULE: ./node_modules/codemirror/addon/fold/comment-fold.js
-var comment_fold = __webpack_require__("164b");
-
-// CONCATENATED MODULE: ./src/utils/create-editor.js
+// CONCATENATED MODULE: ./src/components/utils/create-editor.js
 
 
 
 
+ // import 'codemirror/addon/selection/active-line'
+// import 'codemirror/addon/edit/matchtags'
+// import 'codemirror/addon/edit/matchbrackets'
+// import 'codemirror/addon/edit/closebrackets'
+// import 'codemirror/addon/edit/closetag'
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var isMac = codemirror_default.a.keyMap.default === codemirror_default.a.keyMap.macDefault;
+var CodeMirror = window.CodeMirror || codemirror_default.a;
 /* harmony default export */ var create_editor = (function (el) {
   var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var editor = codemirror_default.a.fromTextArea(el, _objectSpread2({
+  // eslint-disable-next-line no-undef
+  var editor = CodeMirror.fromTextArea(el, _objectSpread2({
     lineNumbers: true,
     lineWrapping: true,
     styleActiveLine: true,
     matchTags: {
       bothTags: true
     },
-    matchBrackets: true,
-    foldGutter: true,
-    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
+    matchBrackets: true
   }, opts));
-  editor.setOption('extraKeys', _objectSpread2(_objectSpread2({}, editor.getOption('extraKeys')), {}, _defineProperty({
-    Tab: function Tab(cm) {
-      // Indent, or place 2 spaces
-      if (cm.somethingSelected()) {
-        cm.indentSelection('add');
-      } else if (cm.getOption('mode').indexOf('html') > -1) {
-        try {
-          cm.execCommand('emmetExpandAbbreviation');
-        } catch (err) {
-          console.error(err);
-        }
-      } else {
-        var spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
-        cm.replaceSelection(spaces, 'end', '+input');
-      }
-    }
-  }, isMac ? 'Cmd-/' : 'Ctrl-/', function (cm) {
-    cm.toggleComment();
-  })));
-  editor.on('gutterClick', function (cm, line, gutter) {
-    if (gutter === 'CodeMirror-linenumbers') {
-      // eslint-disable-next-line new-cap
-      return cm.setSelection(codemirror_default.a.Pos(line, 0), codemirror_default.a.Pos(line + 1, 0));
-    }
-  });
   return editor;
 });
-// CONCATENATED MODULE: ./src/utils/pan-position.js
+// CONCATENATED MODULE: ./src/components/utils/pan-position.js
 
 
 /* harmony default export */ var pan_position = (function (pans, pan) {
@@ -19504,13 +17845,45 @@ var isMac = codemirror_default.a.keyMap.default === codemirror_default.a.keyMap.
     };
   }
 });
-// CONCATENATED MODULE: ./src/utils/create-pan.js
+// EXTERNAL MODULE: ./src/utils/index.js
+var utils = __webpack_require__("ed08");
+var utils_default = /*#__PURE__*/__webpack_require__.n(utils);
+
+// CONCATENATED MODULE: ./src/components/utils/create-pan.js
 
 
 
 
 
 
+
+
+ // eslint-disable-next-line no-unused-vars
+
+
+
+function loadCodeMirror() {
+  return _loadCodeMirror.apply(this, arguments);
+}
+
+function _loadCodeMirror() {
+  _loadCodeMirror = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.next = 2;
+            return utils_default.a.loadCSSFromURL('https://cdn.jsdelivr.net/npm/codemirror@5/lib/codemirror.css');
+
+          case 2:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2);
+  }));
+  return _loadCodeMirror.apply(this, arguments);
+}
 
 /* harmony default export */ var create_pan = (function () {
   var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
@@ -19544,30 +17917,50 @@ var isMac = codemirror_default.a.keyMap.default === codemirror_default.a.keyMap.
     mounted: function mounted() {
       var _this = this;
 
-      this.editor = create_editor(this.$refs.editor, _objectSpread2({}, editor));
-      this.editor.on('change', function (e) {
-        get(_this).$store.code[name].code = e.getValue();
-      });
-      this.editor.on('focus', function () {
-        if (_this.activePan !== name && get(_this).$store.visiblePans.indexOf(name) > -1) {
-          _this.setActivePan();
-        }
-      });
-      this.style = pan_position(get(this).$store.visiblePans, name);
-      get(this).$store.$on('visiblePans-change', function (val) {
-        _this.style = pan_position(val, name);
-      });
-      get(this).$store.$on('focus-editor', function () {
-        _this.editor.focus();
-      });
-      get(this).$store.$on(["refresh-".concat(name, "-editor"), 'refresh-all'], function () {
-        _this.editor.setValue(get(_this).$store.code[name].code);
+      return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return loadCodeMirror();
 
-        _this.editor.refresh();
-      });
-      get(this).$store.$on("set-".concat(name, "-pan-style"), function (style) {
-        _this.style = _objectSpread2(_objectSpread2({}, _this.style), style);
-      });
+              case 2:
+                _this.editor = create_editor(_this.$refs.editor, _objectSpread2({}, editor));
+
+                _this.editor.on('change', function (e) {
+                  get(_this).$store.code[name].code = e.getValue();
+                });
+
+                _this.editor.on('focus', function () {
+                  if (_this.activePan !== name && get(_this).$store.visiblePans.indexOf(name) > -1) {
+                    _this.setActivePan();
+                  }
+                });
+
+                _this.style = pan_position(get(_this).$store.visiblePans, name);
+                get(_this).$store.$on('visiblePans-change', function (val) {
+                  _this.style = pan_position(val, name);
+                });
+                get(_this).$store.$on('focus-editor', function () {
+                  _this.editor.focus();
+                });
+                get(_this).$store.$on(["refresh-".concat(name, "-editor"), 'refresh-all'], function () {
+                  _this.editor.setValue(get(_this).$store.code[name].code);
+
+                  _this.editor.refresh();
+                });
+                get(_this).$store.$on("set-".concat(name, "-pan-style"), function (style) {
+                  _this.style = _objectSpread2(_objectSpread2({}, _this.style), style);
+                });
+
+              case 10:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
     },
     methods: {
       setActivePan: function setActivePan() {
@@ -19593,12 +17986,11 @@ var isMac = codemirror_default.a.keyMap.default === codemirror_default.a.keyMap.
 //
 //
 //
-//
 
 /* harmony default export */ var HTMLPanvue_type_script_lang_js_ = (create_pan({
-  name: 'html',
+  name: "html",
   editor: {
-    mode: 'htmlmixed',
+    mode: "htmlmixed",
     autoCloseTags: true
   }
 }));
@@ -19614,8 +18006,8 @@ var isMac = codemirror_default.a.keyMap.default === codemirror_default.a.keyMap.
 
 var HTMLPan_component = normalizeComponent(
   components_HTMLPanvue_type_script_lang_js_,
-  HTMLPanvue_type_template_id_3c6a2bbc_render,
-  HTMLPanvue_type_template_id_3c6a2bbc_staticRenderFns,
+  HTMLPanvue_type_template_id_6abf9f65_render,
+  HTMLPanvue_type_template_id_6abf9f65_staticRenderFns,
   false,
   null,
   null,
@@ -19624,12 +18016,12 @@ var HTMLPan_component = normalizeComponent(
 )
 
 /* harmony default export */ var HTMLPan = (HTMLPan_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"14a844e4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/CSSPan.vue?vue&type=template&id=c86dcd44&
-var CSSPanvue_type_template_id_c86dcd44_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"css-pan",class:{ 'active-pan': _vm.isActivePan },style:(_vm.style),on:{"click":function($event){return _vm.setActivePan('css')}}},[_c('div',{staticClass:"pan-head"},[_vm._v(" "+_vm._s(_vm.code.name)+" ")]),_c('textarea',{ref:"editor",domProps:{"value":_vm.code.code}}),_c('PanResizer',{attrs:{"pan":"css","enable":_vm.enableResizer}})],1)}
-var CSSPanvue_type_template_id_c86dcd44_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"14a844e4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/CSSPan.vue?vue&type=template&id=09a16436&
+var CSSPanvue_type_template_id_09a16436_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"css-pan",class:{ 'active-pan': _vm.isActivePan },style:(_vm.style),on:{"click":function($event){return _vm.setActivePan('css')}}},[_c('div',{staticClass:"pan-head"},[_vm._v(_vm._s(_vm.code.name))]),_c('textarea',{ref:"editor",domProps:{"value":_vm.code.code}}),_c('PanResizer',{attrs:{"pan":"css","enable":_vm.enableResizer}})],1)}
+var CSSPanvue_type_template_id_09a16436_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/CSSPan.vue?vue&type=template&id=c86dcd44&
+// CONCATENATED MODULE: ./src/components/CSSPan.vue?vue&type=template&id=09a16436&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/CSSPan.vue?vue&type=script&lang=js&
 //
@@ -19645,12 +18037,11 @@ var CSSPanvue_type_template_id_c86dcd44_staticRenderFns = []
 //
 //
 //
-//
 
 /* harmony default export */ var CSSPanvue_type_script_lang_js_ = (create_pan({
-  name: 'css',
+  name: "css",
   editor: {
-    mode: 'css',
+    mode: "css",
     autoCloseBrackets: true
   }
 }));
@@ -19666,8 +18057,8 @@ var CSSPanvue_type_template_id_c86dcd44_staticRenderFns = []
 
 var CSSPan_component = normalizeComponent(
   components_CSSPanvue_type_script_lang_js_,
-  CSSPanvue_type_template_id_c86dcd44_render,
-  CSSPanvue_type_template_id_c86dcd44_staticRenderFns,
+  CSSPanvue_type_template_id_09a16436_render,
+  CSSPanvue_type_template_id_09a16436_staticRenderFns,
   false,
   null,
   null,
@@ -19676,12 +18067,12 @@ var CSSPan_component = normalizeComponent(
 )
 
 /* harmony default export */ var CSSPan = (CSSPan_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"14a844e4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/JSPan.vue?vue&type=template&id=0da081f4&
-var JSPanvue_type_template_id_0da081f4_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"js-pan",class:{ 'active-pan': _vm.isActivePan },style:(_vm.style),on:{"click":function($event){return _vm.setActivePan('js')}}},[_c('div',{staticClass:"pan-head"},[_vm._v(" "+_vm._s(_vm.code.name)+" ")]),_c('textarea',{ref:"editor",domProps:{"value":_vm.code.code}}),_c('PanResizer',{attrs:{"pan":"js","enable":_vm.enableResizer}})],1)}
-var JSPanvue_type_template_id_0da081f4_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"14a844e4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/JSPan.vue?vue&type=template&id=771d3ea0&
+var JSPanvue_type_template_id_771d3ea0_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"js-pan",class:{ 'active-pan': _vm.isActivePan },style:(_vm.style),on:{"click":function($event){return _vm.setActivePan('js')}}},[_c('div',{staticClass:"pan-head"},[_vm._v(_vm._s(_vm.code.name))]),_c('textarea',{ref:"editor",domProps:{"value":_vm.code.code}}),_c('PanResizer',{attrs:{"pan":"js","enable":_vm.enableResizer}})],1)}
+var JSPanvue_type_template_id_771d3ea0_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/JSPan.vue?vue&type=template&id=0da081f4&
+// CONCATENATED MODULE: ./src/components/JSPan.vue?vue&type=template&id=771d3ea0&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/JSPan.vue?vue&type=script&lang=js&
 //
@@ -19697,12 +18088,11 @@ var JSPanvue_type_template_id_0da081f4_staticRenderFns = []
 //
 //
 //
-//
 
 /* harmony default export */ var JSPanvue_type_script_lang_js_ = (create_pan({
-  name: 'js',
+  name: "js",
   editor: {
-    mode: 'jsx',
+    mode: "jsx",
     autofocus: true,
     autoCloseBrackets: true
   }
@@ -19719,8 +18109,8 @@ var JSPanvue_type_template_id_0da081f4_staticRenderFns = []
 
 var JSPan_component = normalizeComponent(
   components_JSPanvue_type_script_lang_js_,
-  JSPanvue_type_template_id_0da081f4_render,
-  JSPanvue_type_template_id_0da081f4_staticRenderFns,
+  JSPanvue_type_template_id_771d3ea0_render,
+  JSPanvue_type_template_id_771d3ea0_staticRenderFns,
   false,
   null,
   null,
@@ -19729,15 +18119,18 @@ var JSPan_component = normalizeComponent(
 )
 
 /* harmony default export */ var JSPan = (JSPan_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"14a844e4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/OutputPan.vue?vue&type=template&id=76fb334b&scoped=true&
-var OutputPanvue_type_template_id_76fb334b_scoped_true_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"output-pan",class:{ 'active-pan': _vm.isActivePan },style:(_vm.style),on:{"click":function($event){return _vm.setActivePan('output')}}},[_c('div',{staticClass:"pan-head"},[_vm._v(" Output ")]),_c('div',{staticClass:"output-iframe",attrs:{"id":"output-iframe"}},[_c('div',{ref:"output-iframe-holder"})])])}
-var OutputPanvue_type_template_id_76fb334b_scoped_true_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"14a844e4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/OutputPan.vue?vue&type=template&id=058f51e0&scoped=true&
+var OutputPanvue_type_template_id_058f51e0_scoped_true_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"output-pan",class:{ 'active-pan': _vm.isActivePan },style:(_vm.style),on:{"click":function($event){return _vm.setActivePan('output')}}},[_c('div',{staticClass:"pan-head"},[_vm._v(" Output ")]),_c('div',{staticClass:"output-iframe",attrs:{"id":"output-iframe"}},[_c('div',{ref:"output-iframe-holder"})])])}
+var OutputPanvue_type_template_id_058f51e0_scoped_true_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/OutputPan.vue?vue&type=template&id=76fb334b&scoped=true&
+// CONCATENATED MODULE: ./src/components/OutputPan.vue?vue&type=template&id=058f51e0&scoped=true&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.concat.js
 var es_array_concat = __webpack_require__("99af");
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.join.js
+var es_array_join = __webpack_require__("a15b");
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.map.js
 var es_array_map = __webpack_require__("d81d");
@@ -19754,54 +18147,6 @@ var es_regexp_exec = __webpack_require__("ac1f");
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.string.replace.js
 var es_string_replace = __webpack_require__("5319");
 
-// EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
-var runtime = __webpack_require__("96cf");
-
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es.object.to-string.js
-var es_object_to_string = __webpack_require__("d3b7");
-
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es.promise.js
-var es_promise = __webpack_require__("e6cf");
-
-// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js
-
-
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-  try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
-  }
-
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
-}
-
-function _asyncToGenerator(fn) {
-  return function () {
-    var self = this,
-        args = arguments;
-    return new Promise(function (resolve, reject) {
-      var gen = fn.apply(self, args);
-
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-      }
-
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-      }
-
-      _next(undefined);
-    });
-  };
-}
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.reflect.construct.js
 var es_reflect_construct = __webpack_require__("4ae1");
 
@@ -19875,7 +18220,7 @@ function _createClass(Constructor, protoProps, staticProps) {
   if (staticProps) _defineProperties(Constructor, staticProps);
   return Constructor;
 }
-// CONCATENATED MODULE: ./src/utils/iframe.js
+// CONCATENATED MODULE: ./src/components/utils/iframe.js
 
 
 
@@ -19944,7 +18289,7 @@ var iframe_Iframe = /*#__PURE__*/function () {
 
   return construct_construct(iframe_Iframe, args);
 });
-// CONCATENATED MODULE: ./node_modules/_raw-loader@4.0.1@raw-loader/dist/cjs.js!./src/utils/proxy-console.js
+// CONCATENATED MODULE: ./node_modules/_raw-loader@4.0.1@raw-loader/dist/cjs.js!./src/components/utils/proxy-console.js
 /* harmony default export */ var proxy_console = ("(function () {\r\n\r\n    window.onerror = function (message) {\r\n        window.parent.postMessage({\r\n            /* FLAG-MESSAGE-ID */\r\n            type: 'iframe-error', \r\n            message \r\n        }, '*')\r\n    }\r\n\r\n    const methods = [\r\n        'debug',\r\n        'clear',\r\n        'error',\r\n        'info',\r\n        'log',\r\n        'warn',\r\n        'dir',\r\n        'props',\r\n        '_raw',\r\n        'group',\r\n        'groupEnd',\r\n        'dirxml',\r\n        'table',\r\n        'trace',\r\n        'assert',\r\n        'count',\r\n        'markTimeline',\r\n        'profile',\r\n        'profileEnd',\r\n        'time',\r\n        'timeEnd',\r\n        'timeStamp',\r\n        'groupCollapsed'\r\n    ]\r\n\r\n    const newConsole = Object.create(console)\r\n\r\n    methods.map(method => {\r\n        const originalMethod = console[method]\r\n        newConsole[method] = function (...args) {\r\n            originalMethod(...args)\r\n            window.parent.postMessage({\r\n                /* FLAG-MESSAGE-ID */\r\n                args,\r\n                method,\r\n                type: 'console',\r\n            }, '*')\r\n        }\r\n    })\r\n\r\n    window.console = newConsole\r\n})()\r\n");
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/OutputPan.vue?vue&type=script&lang=js&
 
@@ -19958,10 +18303,6 @@ var iframe_Iframe = /*#__PURE__*/function () {
 
 
 
-//
-//
-//
-//
 //
 //
 //
@@ -20090,8 +18431,8 @@ var createElement = function createElement(tag) {
                 get(_this3).$store.logs.splice(0, get(_this3).$store.logs.length);
 
                 _this3.iframe.setHTML({
-                  head: headStyle + proxyConsole + script,
-                  body: html
+                  head: headStyle + proxyConsole,
+                  body: html + script
                 });
 
               case 6:
@@ -20109,8 +18450,8 @@ var createElement = function createElement(tag) {
 });
 // CONCATENATED MODULE: ./src/components/OutputPan.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_OutputPanvue_type_script_lang_js_ = (OutputPanvue_type_script_lang_js_); 
-// EXTERNAL MODULE: ./src/components/OutputPan.vue?vue&type=style&index=0&id=76fb334b&lang=stylus&scoped=true&
-var OutputPanvue_type_style_index_0_id_76fb334b_lang_stylus_scoped_true_ = __webpack_require__("4978");
+// EXTERNAL MODULE: ./src/components/OutputPan.vue?vue&type=style&index=0&id=058f51e0&lang=stylus&scoped=true&
+var OutputPanvue_type_style_index_0_id_058f51e0_lang_stylus_scoped_true_ = __webpack_require__("9a34");
 
 // CONCATENATED MODULE: ./src/components/OutputPan.vue
 
@@ -20123,29 +18464,25 @@ var OutputPanvue_type_style_index_0_id_76fb334b_lang_stylus_scoped_true_ = __web
 
 var OutputPan_component = normalizeComponent(
   components_OutputPanvue_type_script_lang_js_,
-  OutputPanvue_type_template_id_76fb334b_scoped_true_render,
-  OutputPanvue_type_template_id_76fb334b_scoped_true_staticRenderFns,
+  OutputPanvue_type_template_id_058f51e0_scoped_true_render,
+  OutputPanvue_type_template_id_058f51e0_scoped_true_staticRenderFns,
   false,
   null,
-  "76fb334b",
+  "058f51e0",
   null
   
 )
 
 /* harmony default export */ var OutputPan = (OutputPan_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"14a844e4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ConsolePan.vue?vue&type=template&id=52b013b5&scoped=true&
-var ConsolePanvue_type_template_id_52b013b5_scoped_true_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"console-pan",class:{'active-pan': _vm.isActivePan},style:(_vm.style),on:{"click":function($event){return _vm.setActivePan('console')}}},[_c('div',{staticClass:"pan-head"},[_vm._v(" Console ")]),_c('div',{ref:"console",staticClass:"console-logs"},_vm._l((_vm.logs),function(log,idx){return _c('div',{key:idx + log.message,staticClass:"console-log",class:log.type,domProps:{"innerHTML":_vm._s(log.message)}})}),0),_c('PanResizer',{attrs:{"pan":"console","enable":_vm.enableResizer}})],1)}
-var ConsolePanvue_type_template_id_52b013b5_scoped_true_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"14a844e4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ConsolePan.vue?vue&type=template&id=06b1b677&scoped=true&
+var ConsolePanvue_type_template_id_06b1b677_scoped_true_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"console-pan",class:{ 'active-pan': _vm.isActivePan },style:(_vm.style),on:{"click":function($event){return _vm.setActivePan('console')}}},[_c('div',{staticClass:"pan-head"},[_vm._v(" Console ")]),_c('div',{ref:"console",staticClass:"console-logs"},_vm._l((_vm.logs),function(log,idx){return _c('div',{key:idx + log.message,staticClass:"console-log",class:log.type,domProps:{"innerHTML":_vm._s(log.message)}})}),0),_c('PanResizer',{attrs:{"pan":"console","enable":_vm.enableResizer}})],1)}
+var ConsolePanvue_type_template_id_06b1b677_scoped_true_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/ConsolePan.vue?vue&type=template&id=52b013b5&scoped=true&
+// CONCATENATED MODULE: ./src/components/ConsolePan.vue?vue&type=template&id=06b1b677&scoped=true&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ConsolePan.vue?vue&type=script&lang=js&
 
-//
-//
-//
-//
 //
 //
 //
@@ -20189,7 +18526,9 @@ var ConsolePanvue_type_template_id_52b013b5_scoped_true_staticRenderFns = []
 
     get(this).$store.$on('visiblePans-change', function (val) {
       _this.style = pan_position(val, 'console');
-    }), get(this).$store.$on("set-console-pan-style", function (style) {
+    });
+    this.style = pan_position(get(this).$store.visiblePans, 'console');
+    get(this).$store.$on("set-console-pan-style", function (style) {
       _this.style = _objectSpread2(_objectSpread2({}, _this.style), style);
     });
   },
@@ -20204,8 +18543,8 @@ var ConsolePanvue_type_template_id_52b013b5_scoped_true_staticRenderFns = []
 });
 // CONCATENATED MODULE: ./src/components/ConsolePan.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_ConsolePanvue_type_script_lang_js_ = (ConsolePanvue_type_script_lang_js_); 
-// EXTERNAL MODULE: ./src/components/ConsolePan.vue?vue&type=style&index=0&id=52b013b5&lang=stylus&scoped=true&
-var ConsolePanvue_type_style_index_0_id_52b013b5_lang_stylus_scoped_true_ = __webpack_require__("5756");
+// EXTERNAL MODULE: ./src/components/ConsolePan.vue?vue&type=style&index=0&id=06b1b677&lang=stylus&scoped=true&
+var ConsolePanvue_type_style_index_0_id_06b1b677_lang_stylus_scoped_true_ = __webpack_require__("4ffa");
 
 // CONCATENATED MODULE: ./src/components/ConsolePan.vue
 
@@ -20218,11 +18557,11 @@ var ConsolePanvue_type_style_index_0_id_52b013b5_lang_stylus_scoped_true_ = __we
 
 var ConsolePan_component = normalizeComponent(
   components_ConsolePanvue_type_script_lang_js_,
-  ConsolePanvue_type_template_id_52b013b5_scoped_true_render,
-  ConsolePanvue_type_template_id_52b013b5_scoped_true_staticRenderFns,
+  ConsolePanvue_type_template_id_06b1b677_scoped_true_render,
+  ConsolePanvue_type_template_id_06b1b677_scoped_true_staticRenderFns,
   false,
   null,
-  "52b013b5",
+  "06b1b677",
   null
   
 )
@@ -20236,12 +18575,12 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
 var debounce = __webpack_require__("b012");
 var debounce_default = /*#__PURE__*/__webpack_require__.n(debounce);
 
-// CONCATENATED MODULE: ./src/data/index.js
+// CONCATENATED MODULE: ./src/components/utils/data.js
 
 
 
 
-/* harmony default export */ var src_data = ({
+/* harmony default export */ var utils_data = ({
   create: function create() {
     return new external_commonjs_vue_commonjs2_vue_root_Vue_default.a({
       data: function data() {
@@ -20263,7 +18602,7 @@ var debounce_default = /*#__PURE__*/__webpack_require__.n(debounce);
           logs: [{
             message: 'Empty Console'
           }],
-          visiblePans: ['html', 'css', 'js', 'output'],
+          visiblePans: [],
           activePan: '',
           autoRun: true
         };
@@ -20310,7 +18649,7 @@ var debounce_default = /*#__PURE__*/__webpack_require__.n(debounce);
     });
   }
 });
-// CONCATENATED MODULE: ./src/utils/index.js
+// CONCATENATED MODULE: ./src/components/utils/index.js
 var getHumanizedTransformerName = function getHumanizedTransformerName(transformer) {
   var names = {
     html: 'HTML',
@@ -20359,18 +18698,18 @@ var isInIframe = function isInIframe() {
   },
   props: {
     border: {
-      default: false
+      default: true
     },
     visiblePans: Array,
     html: String,
     css: String,
     js: String,
     height: {
-      default: '100%'
+      default: "100%"
     }
   },
   beforeCreate: function beforeCreate() {
-    this.$store = src_data.create();
+    this.$store = utils_data.create();
   },
   data: function data() {
     return {
@@ -20380,16 +18719,20 @@ var isInIframe = function isInIframe() {
     };
   },
   mounted: function mounted() {
+    var _this = this;
+
     if (isInIframe() || this.border) {
-      this.$set(this.style, 'border', this.style.border || 'solid 1px #eee');
-      this.$set(this.style, 'border-radius', this.style['border-radius'] || '1px');
+      this.$set(this.style, "border", this.style.border || "solid 1px #eee");
+      this.$set(this.style, "border-radius", this.style["border-radius"] || "0");
     }
 
     get(this).$store.visiblePans = this.visiblePans || get(this).$store.visiblePans;
-    get(this).$store.code.html.code = this.html || '';
-    get(this).$store.code.css.code = this.css || '';
-    get(this).$store.code.js.code = this.js || '';
-    get(this).$store.$emit('refresh-all');
+    this.$nextTick(function () {
+      get(_this).$store.code.html.code = _this.html || "";
+      get(_this).$store.code.css.code = _this.css || "";
+      get(_this).$store.code.js.code = _this.js || "";
+      get(_this).$store.$emit("refresh-all");
+    });
   },
   methods: {
     isVisible: function isVisible(panName) {
@@ -20399,26 +18742,10 @@ var isInIframe = function isInIframe() {
 });
 // CONCATENATED MODULE: ./src/components/Editor.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_Editorvue_type_script_lang_js_ = (Editorvue_type_script_lang_js_); 
-// EXTERNAL MODULE: ./node_modules/codemirror/lib/codemirror.css?vue&type=style&index=0&lang=css&
-var codemirrorvue_type_style_index_0_lang_css_ = __webpack_require__("3dd9");
-
-// EXTERNAL MODULE: ./node_modules/codemirror/addon/fold/foldgutter.css?vue&type=style&index=1&lang=css&
-var foldguttervue_type_style_index_1_lang_css_ = __webpack_require__("c07f");
-
-// EXTERNAL MODULE: ./src/components/Editor.vue?vue&type=style&index=2&lang=stylus&
-var Editorvue_type_style_index_2_lang_stylus_ = __webpack_require__("94d3");
-
-// EXTERNAL MODULE: ./src/components/Editor.vue?vue&type=style&index=3&id=4ca99cde&lang=stylus&scoped=true&
-var Editorvue_type_style_index_3_id_4ca99cde_lang_stylus_scoped_true_ = __webpack_require__("9fea");
-
-// EXTERNAL MODULE: ./src/components/Editor.vue?vue&type=style&index=4&lang=stylus&
-var Editorvue_type_style_index_4_lang_stylus_ = __webpack_require__("2126");
+// EXTERNAL MODULE: ./src/components/Editor.vue?vue&type=style&index=0&lang=stylus&
+var Editorvue_type_style_index_0_lang_stylus_ = __webpack_require__("cf40");
 
 // CONCATENATED MODULE: ./src/components/Editor.vue
-
-
-
-
 
 
 
@@ -20433,7 +18760,7 @@ var Editor_component = normalizeComponent(
   staticRenderFns,
   false,
   null,
-  "4ca99cde",
+  null,
   null
   
 )
@@ -20587,4 +18914,3 @@ module.exports = global.Promise;
 
 /******/ })["default"];
 });
-//# sourceMappingURL=main.umd.js.map

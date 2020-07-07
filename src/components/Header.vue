@@ -1,60 +1,52 @@
 <template>
-    <header class="header">
-        <div class="header-left header-block"></div>
-        <div class="header-middle header-block pan-toggles">
-            <span
-                class="pan-toggle"
-                :class="{ visible: isVisible('html') }"
-                @click="togglePan('html')"
-            >HTML</span>
-            <span
-                class="pan-toggle"
-                :class="{ visible: isVisible('css') }"
-                @click="togglePan('css')"
-            >CSS</span>
-            <span
-                class="pan-toggle"
-                :class="{ visible: isVisible('js') }"
-                @click="togglePan('js')"
-            >JS</span>
-            <span
-                class="pan-toggle"
-                :class="{ visible: isVisible('console') }"
-                @click="togglePan('console')"
-            >Console</span>
-            <span
-                class="pan-toggle"
-                :class="{ visible: isVisible('output') }"
-                @click="togglePan('output')"
-            >Output</span>
-        </div>
-        <div class="header-right header-block">
-            <Button class="header-right-item" plain @click="runCode">Run</Button>
-        </div>
-    </header>
+  <header class="header">
+    <div class="header-left header-block"></div>
+    <div class="header-middle header-block pan-toggles">
+      <span
+        class="pan-toggle"
+        :class="{ visible: isVisible('html') }"
+        @click="togglePan('html')"
+      >HTML</span>
+      <span class="pan-toggle" :class="{ visible: isVisible('css') }" @click="togglePan('css')">CSS</span>
+      <span class="pan-toggle" :class="{ visible: isVisible('js') }" @click="togglePan('js')">JS</span>
+      <span
+        class="pan-toggle"
+        :class="{ visible: isVisible('console') }"
+        @click="togglePan('console')"
+      >Console</span>
+      <span
+        class="pan-toggle"
+        :class="{ visible: isVisible('output') }"
+        @click="togglePan('output')"
+      >Output</span>
+    </div>
+    <div class="header-right header-block">
+      <Button class="header-right-item" plain @click="runCode">Run</Button>
+    </div>
+  </header>
 </template>
 
 <script>
-import Get from './utils/get-parent-attrs'
+import Get from "./utils/get-parent-attrs";
 
 export default {
-    data() {
-        return {
-            url: window && window.location.href
-        }
+  data() {
+    return {
+      url: window && window.location.href
+    };
+  },
+  methods: {
+    runCode() {
+      Get(this).$store.$emit("run");
     },
-    methods: {
-        runCode() {
-            Get(this).$store.$emit('run')
-        },
-        togglePan(panName) {
-            Get(this).$store.$emit('togglePan', panName)
-        },
-        isVisible(panName) {
-            return Get(this).$store.visiblePans.indexOf(panName) !== -1
-        }
+    togglePan(panName) {
+      Get(this).$store.$emit("togglePan", panName);
+    },
+    isVisible(panName) {
+      return Get(this).$store.visiblePans.indexOf(panName) !== -1;
     }
-}
+  }
+};
 </script>
 
 <style lang="stylus" scoped>
@@ -176,13 +168,13 @@ export default {
     }
 
     &:hover {
-      &:not(.visible) {
-        background-color: var(--light-gray);
-      }
+      box-shadow: inset 0 0 0 white;
+      background-color: #f9f9f9;
     }
 
     &.visible {
-      background-color: #e8f2ff;
+      background-color: #f9f9f9;
+      box-shadow: inset 0 -5px 5px white;
     }
   }
 }

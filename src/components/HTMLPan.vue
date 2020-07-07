@@ -7,7 +7,6 @@
   >
     <div class="pan-head">{{ code.name }}</div>
     <textarea ref="editor" :value="code.code"></textarea>
-    <PanResizer pan="html" :enable="enableResizer" />
   </div>
 </template>
 

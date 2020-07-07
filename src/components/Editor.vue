@@ -2,11 +2,19 @@
   <div class="editor" :style="style">
     <Header />
     <div class="pans">
-      <HTMLPan class="pan" v-show="isVisible('html')" />
-      <CSSPan class="pan" v-show="isVisible('css')" />
-      <JSPan class="pan" v-show="isVisible('js')" />
-      <ConsolePan class="pan" v-show="isVisible('console')" />
-      <OutputPan class="pan" v-show="isVisible('output')" />
+      <HTMLPan class="pan" :class="isVisible('html')?'visible':''" v-show="isVisible('html')" />
+      <CSSPan class="pan" :class="isVisible('css')?'visible':''" v-show="isVisible('css')" />
+      <JSPan class="pan" :class="isVisible('js')?'visible':''" v-show="isVisible('js')" />
+      <ConsolePan
+        class="pan"
+        :class="isVisible('console')?'visible':''"
+        v-show="isVisible('console')"
+      />
+      <OutputPan
+        class="pan"
+        :class="isVisible('output')?'visible':''"
+        v-show="isVisible('output')"
+      />
     </div>
   </div>
 </template>
@@ -36,7 +44,7 @@ export default {
   },
   props: {
     border: {
-      default: false
+      default: true
     },
     visiblePans: Array,
     html: String,
@@ -58,11 +66,12 @@ export default {
   },
   mounted() {
     if (isInIframe() || this.border) {
+      this.$set(this.style, "box-sizing", "border-box");
       this.$set(this.style, "border", this.style.border || "solid 1px #eee");
       this.$set(
         this.style,
         "border-radius",
-        this.style["border-radius"] || "1px"
+        this.style["border-radius"] || "0"
       );
     }
 
@@ -109,6 +118,11 @@ export default {
     bottom: 0;
     overflow: auto;
     height: 100%;
+    border-right: 1px solid #f2f2f2;
+
+    &.visible:last-child {
+      border-right: none;
+    }
 
     &.active-pan {
       background-color: white;
@@ -147,14 +161,6 @@ export default {
       &:hover {
         color: #000;
       }
-    }
-  }
-
-  .pans.resizing {
-    cursor: ew-resize;
-
-    .pan-resizer {
-      cursor: ew-resize;
     }
   }
 
