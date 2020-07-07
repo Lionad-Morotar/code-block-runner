@@ -1,6 +1,8 @@
 const Vue = require('vue')
 const server = require('express')()
 
+const CodeBlock = require('./dist/main.umd.js')
+
 const template = require('fs').readFileSync('./public/server.template.html', 'utf-8')
 
 const renderer = require('vue-server-renderer').createRenderer({
@@ -22,7 +24,10 @@ server.get('/index', (req, res) => {
     data: {
       url: req.url
     },
-    template: `<div>访问的 URL 是： {{ url }}</div>`,
+    components: {
+        CodeBlock,
+    },
+    template: `<div>访问的 URL 是： {{ url }}</div><CodeBlock />`,
   })
 
   renderer.renderToString(app, context, (err, html) => {

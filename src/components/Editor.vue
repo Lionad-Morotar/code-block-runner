@@ -77,6 +77,7 @@ export default {
 
     Get(this).$store.visiblePans =
       this.visiblePans || Get(this).$store.visiblePans;
+
     this.$nextTick(() => {
       Get(this).$store.code.html.code = this.html || "";
       Get(this).$store.code.css.code = this.css || "";

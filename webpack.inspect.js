@@ -40,6 +40,9 @@
     ]
   },
   resolveLoader: {
+    moduleExtensions: [
+      'D:\\@Github\\code-block-run\\src\\components\\utils\\temp\\code.js'
+    ],
     modules: [
       'D:\\@Github\\code-block-run\\node_modules\\@vue\\cli-plugin-babel\\node_modules',
       'node_modules',
@@ -63,7 +66,7 @@
             loader: 'D:\\@Github\\code-block-run\\node_modules\\cache-loader\\dist\\cjs.js',
             options: {
               cacheDirectory: 'D:\\@Github\\code-block-run\\node_modules\\.cache\\vue-loader',
-              cacheIdentifier: 'c9af1a1c'
+              cacheIdentifier: '3a9ad57c'
             }
           },
           /* config.module.rule('vue').use('vue-loader') */
@@ -74,7 +77,7 @@
                 whitespace: 'condense'
               },
               cacheDirectory: 'D:\\@Github\\code-block-run\\node_modules\\.cache\\vue-loader',
-              cacheIdentifier: 'c9af1a1c'
+              cacheIdentifier: '3a9ad57c'
             }
           }
         ]
@@ -1152,7 +1155,7 @@
             loader: 'D:\\@Github\\code-block-run\\node_modules\\cache-loader\\dist\\cjs.js',
             options: {
               cacheDirectory: 'D:\\@Github\\code-block-run\\node_modules\\.cache\\babel-loader',
-              cacheIdentifier: '08d0434b'
+              cacheIdentifier: '207128f3'
             }
           },
           /* config.module.rule('js').use('babel-loader') */
@@ -1180,7 +1183,7 @@
                 '.vue'
               ],
               cache: true,
-              cacheIdentifier: '52e509b8',
+              cacheIdentifier: '426fec9a',
               emitWarning: false,
               emitError: false,
               eslintPath: 'D:\\@Github\\code-block-run\\node_modules\\eslint',

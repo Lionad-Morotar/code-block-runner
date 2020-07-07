@@ -1,3 +1,13 @@
+import _CodeMirror from 'codemirror'
+import 'codemirror/mode/htmlmixed/htmlmixed'
+import 'codemirror/mode/jsx/jsx'
+import 'codemirror/mode/css/css'
+// import 'codemirror/addon/selection/active-line'
+// import 'codemirror/addon/edit/matchtags'
+// import 'codemirror/addon/edit/matchbrackets'
+// import 'codemirror/addon/edit/closebrackets'
+// import 'codemirror/addon/edit/closetag'
+
 import createEditor from './create-editor'
 import panPosition from './pan-position'
 import Get from './get-parent-attrs'
@@ -6,13 +16,15 @@ import Get from './get-parent-attrs'
 import utils from '../../utils'
 
 async function loadCodeMirror() {
-    await utils.loadCSSFromURL('https://cdn.jsdelivr.net/npm/codemirror@5/lib/codemirror.css')
     // ! 出现了 indent 报错，暂时去掉语言 mode
     // await utils.loadScriptFromURL('https://cdn.jsdelivr.net/npm/codemirror@5/lib/codemirror.min.js')
     // await utils.loadScriptFromURL('https://cdn.jsdelivr.net/npm/codemirror@5/addon/selection/active-line.min.js')
     // await utils.loadScriptFromURL('https://cdn.jsdelivr.net/npm/codemirror@5/mode/css/css.min.js')
     // await utils.loadScriptFromURL('https://cdn.jsdelivr.net/npm/codemirror@5/mode/htmlmixed/htmlmixed.min.js')
     // await utils.loadScriptFromURL('https://cdn.jsdelivr.net/npm/codemirror@5/mode/jsx/jsx.min.js')/
+}
+function loadCodeMirrorCSS() {
+    utils.loadCSSFromURL('https://cdn.jsdelivr.net/npm/codemirror@5/lib/codemirror.css')
 }
 
 export default ({ name, editor, components } = {}) => {
@@ -40,9 +52,11 @@ export default ({ name, editor, components } = {}) => {
             }
         },
         async mounted() {
+            loadCodeMirrorCSS()
             await loadCodeMirror()
 
-            this.editor = createEditor(this.$refs.editor, {
+            const CodeMirror = window.CodeMirror || _CodeMirror
+            this.editor = createEditor(this.$refs.editor, CodeMirror, {
                 ...editor
             })
             this.editor.on('change', e => {
@@ -54,6 +68,7 @@ export default ({ name, editor, components } = {}) => {
                 }
             })
             this.style = panPosition(Get(this).$store.visiblePans, name)
+
             Get(this).$store.$on('visiblePans-change', val => {
                 this.style = panPosition(val, name)
             })
@@ -63,12 +78,6 @@ export default ({ name, editor, components } = {}) => {
             Get(this).$store.$on([`refresh-${name}-editor`, 'refresh-all'], () => {
                 this.editor.setValue(Get(this).$store.code[name].code)
                 this.editor.refresh()
-            })
-            Get(this).$store.$on(`set-${name}-pan-style`, style => {
-                this.style = {
-                    ...this.style,
-                    ...style
-                }
             })
         },
         methods: {

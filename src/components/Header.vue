@@ -21,7 +21,7 @@
       >Output</span>
     </div>
     <div class="header-right header-block">
-      <Button class="header-right-item" plain @click="runCode">Run</Button>
+      <!-- <Button class="header-right-item" plain @click="runCode">Run</Button> -->
     </div>
   </header>
 </template>
@@ -75,27 +75,6 @@ export default {
   }
 }
 
-.el-dropdown-menu__item > label, .el-dropdown-menu__item > button {
-  width: 100%;
-  display: none;
-}
-
-.el-dropdown-menu__item > button {
-  text-align: left;
-}
-
-@media screen and (max-width: 992px) {
-  .el-dropdown-menu__item > label {
-    display: inline-block;
-  }
-}
-
-@media screen and (max-width: 576px) {
-  .el-dropdown-menu__item > button {
-    display: inline-block;
-  }
-}
-
 .header-right {
   display: flex;
   justify-content: flex-end;
@@ -121,24 +100,6 @@ export default {
     transition: 0.1s;
     font-weight: 500;
   }
-
-  @media screen and (max-width: 992px) {
-    > label {
-      display: none;
-    }
-  }
-
-  @media screen and (max-width: 576px) {
-    > button {
-      display: none;
-    }
-  }
-}
-
-.changelog-indicator {
-  display: flex;
-  align-items: center;
-  height: 28px;
 }
 
 .pan-toggles {
@@ -176,34 +137,6 @@ export default {
       background-color: #f9f9f9;
       box-shadow: inset 0 -5px 5px white;
     }
-  }
-}
-
-.editor-save-status {
-  display: flex;
-  align-items: center;
-  color: #607d8b;
-
-  .svg-icon {
-    display: flex;
-    align-items: center;
-    margin-right: 5px;
-  }
-
-  >>> svg {
-    fill: @color;
-    width: 16px;
-    height: @width;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .header-left {
-    display: none;
-  }
-
-  .pan-toggles {
-    justify-content: left;
   }
 }
 </style>

@@ -44,12 +44,6 @@ export default {
       this.style = panPosition(val, "console");
     });
     this.style = panPosition(Get(this).$store.visiblePans, "console");
-    Get(this).$store.$on(`set-console-pan-style`, style => {
-      this.style = {
-        ...this.style,
-        ...style
-      };
-    });
   },
   methods: {
     setActivePan() {
