@@ -1,28 +1,24 @@
+import _CodeMirror from 'codemirror'
+import 'codemirror/mode/htmlmixed/htmlmixed'
+import 'codemirror/mode/jsx/jsx'
+import 'codemirror/mode/css/css'
+// import 'codemirror/addon/selection/active-line'
+// import 'codemirror/addon/edit/matchtags'
+// import 'codemirror/addon/edit/matchbrackets'
+// import 'codemirror/addon/edit/closebrackets'
+// import 'codemirror/addon/edit/closetag'
+
+const CodeMirror = window.CodeMirror || _CodeMirror
+
 export default function(el, opts = {}) {
+    // eslint-disable-next-line no-undef
     const editor = CodeMirror.fromTextArea(el, {
         lineNumbers: true,
+        lineWrapping: true,
         styleActiveLine: true,
+        matchTags: { bothTags: true },
         matchBrackets: true,
         ...opts
-    })
-
-    editor.setOption('extraKeys', {
-        ...editor.getOption('extraKeys'),
-        Tab: cm => {
-            console.log('asdf')
-            if (cm.somethingSelected()) {
-                cm.indentSelection('add')
-            } else {
-                cm.replaceSelection(Array(cm.getOption('indentUnit') + 1).join(' '), 'end', '+input')
-            }
-        },
-        'Shift-Tab': cm => {
-            if (cm.somethingSelected()) {
-                cm.indentSelection('subtract')
-            } else {
-                // TODO
-            }
-        }
     })
 
     return editor
